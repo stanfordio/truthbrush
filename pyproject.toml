@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "client"
+version = "0.1.0"
+description = "API client for Truth Social"
+authors = ["R. Miles McCain <github@sendmiles.email>"]
+license = "Apache 2.0"
+
+[tool.poetry.scripts]
+ts = "client.cli:cli"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.27.1"
+click = "^8.0.4"
+loguru = "^0.6.0"
+python-dotenv = "^0.19.2"
+
+[tool.poetry.dev-dependencies]
+black = "^22.1.0"
+pytest = "^7.0.1"
+pylint = "^2.12.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
