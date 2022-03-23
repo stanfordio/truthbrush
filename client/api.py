@@ -2,9 +2,12 @@ from email.generator import Generator
 from time import sleep
 from typing import Any, Iterator, List
 from loguru import logger
+from requests.sessions import HTTPAdapter
 from dateutil import parser as date_parse
 import requests
 from datetime import datetime, timezone
+
+from urllib3 import Retry
 
 BASE_URL = "https://truthsocial.com/api/v1"
 USER_AGENT = "TruthSocial/45 CFNetwork/1329 Darwin/21.3.0"
@@ -15,6 +18,13 @@ class Api:
         self.ratelimit_max = 300
         self.ratelimit_remaining = None
         self.ratelimit_reset = None
+
+    def _make_session(self):
+        s = requests.Session()
+        retries = Retry(total=10, backoff_factor=0.5, status_forcelist=[413, 429, 503, 403, 500, 503])
+        s.mount("http://", HTTPAdapter(max_retries=retries))
+        s.mount("https://", HTTPAdapter(max_retries=retries))
+        return s
 
     def _check_ratelimit(self, resp):
         if resp.headers.get("x-ratelimit-limit") is not None:
@@ -32,7 +42,7 @@ class Api:
 
 
     def _get(self, url: str, params: dict=None) -> Any:
-        resp = requests.get(BASE_URL + url, params=params, headers={
+        resp = self._make_session().get(BASE_URL + url, params=params, headers={
             "authorization": "Bearer " + self.auth_id,
             "user-agent": USER_AGENT,
         })
@@ -45,7 +55,7 @@ class Api:
     def _get_paginated(self, url: str, params: dict=None) -> Any:
         next_link = BASE_URL + url
         while next_link is not None:
-            resp = requests.get(next_link, params=params, headers={
+            resp = self._make_session().get(next_link, params=params, headers={
                 "authorization": "Bearer " + self.auth_id,
                 "user-agent": USER_AGENT,
             })
