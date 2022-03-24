@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 
 from urllib3 import Retry
 
-BASE_URL = "https://truthsocial.com/api/v1"
+BASE_URL = "https://truthsocial.com/api"
 USER_AGENT = "TruthSocial/54 CFNetwork/1331 Darwin/21.4.0"
 
 
@@ -91,17 +91,22 @@ class Api:
         """Lookup a user's information."""
 
         assert user_handle is not None
-        return self._get("/accounts/lookup", params=dict(acct=user_handle))
+        return self._get("/v1/accounts/lookup", params=dict(acct=user_handle))
 
     def trending(self):
         """Return trending truths."""
 
-        return self._get("/truth/trending/truths")
+        return self._get("/v1/truth/trending/truths")
 
     def tags(self):
         """Return trending tags."""
 
-        return self._get("/trends")
+        return self._get("/v1/trends")
+
+    def suggested(self, maximum: int = 50) -> dict:
+        """Lookup a user's information."""
+
+        return self._get(f"/v2/suggestions?limit={maximum}")
 
     def user_followers(
         self, user_handle: str = None, user_id: str = None, maximum: int = 1000
@@ -110,7 +115,7 @@ class Api:
         user_id = user_id if user_id is not None else self.lookup(user_handle)["id"]
 
         n_output = 0
-        for followers_batch in self._get_paginated(f"/accounts/{user_id}/followers"):
+        for followers_batch in self._get_paginated(f"/v1/accounts/{user_id}/followers"):
             for f in followers_batch:
                 yield f
                 n_output += 1

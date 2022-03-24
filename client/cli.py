@@ -40,6 +40,13 @@ def user(handle: str):
 
 
 @cli.command()
+def suggestions():
+    """Pull the list of suggested users."""
+
+    print(json.dumps(api.suggested()))
+
+
+@cli.command()
 @click.argument("handle")
 @click.option("--maximum", help="the maximum number of followers to pull", type=int)
 def followers(handle: str, maximum: int = None):
