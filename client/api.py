@@ -98,6 +98,11 @@ class Api:
 
         return self._get("/truth/trending/truths")
 
+    def tags(self):
+        """Return trending tags."""
+
+        return self._get("/trends")
+
     def user_followers(
         self, user_handle: str = None, user_id: str = None, maximum: int = 1000
     ) -> Iterator[dict]:

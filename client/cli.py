@@ -19,9 +19,16 @@ def cli():
 
 @cli.command()
 def trends():
-    """Pull a user's metadata."""
+    """Pull trendy Truths."""
 
     print(json.dumps(api.trending()))
+
+
+@cli.command()
+def tags():
+    """Pull trendy tags."""
+
+    print(json.dumps(api.tags()))
 
 
 @cli.command()
