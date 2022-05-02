@@ -126,11 +126,12 @@ class Api:
                 if maximum is not None and n_output >= maximum:
                     return
 
-    def pull_statuses(self, id: int, created_after: date, replies: bool) -> List[dict]:
+    def pull_statuses(self, username: str, created_after: date, replies: bool) -> List[dict]:
         """Pull the given user's statuses. Returns an empty list if not found."""
 
         params = {}
         all_posts = []
+        id = self.lookup(username)['id']
         while True:
             try:
                 url = f"/v1/accounts/{id}/statuses"

@@ -58,7 +58,7 @@ def followers(handle: str, maximum: int = None):
 
 
 @cli.command()
-@click.argument("id")
+@click.argument("username")
 @click.option(
     "--replies/--no-replies",
     default=False,
@@ -70,6 +70,6 @@ def followers(handle: str, maximum: int = None):
     help="Only pull posts created on or after the specified date, e.g. 2021-10-02 (defaults to none).",
     type=date.fromisoformat,
 )
-def statuses(id: int, replies: bool = False, created_after: date = None):
+def statuses(username: str, replies: bool = False, created_after: date = None):
     """Pull a user's statuses"""
-    print(json.dumps(api.pull_statuses(id, created_after, replies)))
+    print(json.dumps(api.pull_statuses(username, created_after, replies)))
