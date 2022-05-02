@@ -1,8 +1,9 @@
-"""Defines the CLI for TruthSeeker."""
+"""Defines the CLI for Truthbrush."""
 
 import json
 import os
 import click
+from datetime import date
 import pkg_resources
 from dotenv import load_dotenv
 
@@ -54,3 +55,21 @@ def followers(handle: str, maximum: int = None):
 
     for follower in api.user_followers(handle, maximum=maximum):
         print(json.dumps(follower))
+
+
+@cli.command()
+@click.argument("id")
+@click.option(
+    "--replies/--no-replies",
+    default=False,
+    help="Include replies when pulling posts (defaults to no replies)",
+)
+@click.option(
+    "--created-after",
+    default=None,
+    help="Only pull posts created on or after the specified date, e.g. 2021-10-02 (defaults to none).",
+    type=date.fromisoformat,
+)
+def statuses(id: int, replies: bool = False, created_after: date = None):
+    """Pull a user's statuses"""
+    print(json.dumps(api.pull_statuses(id, created_after, replies)))
