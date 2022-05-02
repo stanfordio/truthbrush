@@ -108,7 +108,7 @@ class Api:
         return self._get("/v1/trends")
 
     def suggested(self, maximum: int = 50) -> dict:
-        """Lookup a user's information."""
+        """Return a list of suggested users to follow."""
 
         return self._get(f"/v2/suggestions?limit={maximum}")
 
