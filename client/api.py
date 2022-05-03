@@ -29,7 +29,7 @@ class Api:
         retries = Retry(
             total=10,
             backoff_factor=0.5,
-            status_forcelist=[413, 429, 503, 403, 500, 501, 502, 503, 504],
+            status_forcelist=[413, 429, 503, 403, 500, 501, 502, 503, 504, 524],
         )
         s.mount("http://", HTTPAdapter(max_retries=retries))
         s.mount("https://", HTTPAdapter(max_retries=retries))
