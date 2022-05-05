@@ -4,13 +4,20 @@ from typing import Any, Iterator, List
 from loguru import logger
 from requests.sessions import HTTPAdapter
 from dateutil import parser as date_parse
-import requests
-from datetime import datetime, timezone
-
+from datetime import datetime, timezone, date
 from urllib3 import Retry
+import requests
+import json
+import logging
+import os
+
+logging.basicConfig(level=logging.DEBUG)
+
 
 BASE_URL = "https://truthsocial.com/api"
-USER_AGENT = "TruthSocial/54 CFNetwork/1331 Darwin/21.4.0"
+USER_AGENT = "TruthSocial/71 CFNetwork/1331.0.7 Darwin/21.4.0"
+
+proxies = {"http": os.getenv("http_proxy"), "https": os.getenv("https_proxy")}
 
 
 class Api:
@@ -22,10 +29,11 @@ class Api:
 
     def _make_session(self):
         s = requests.Session()
+        s.proxies.update(proxies)
         retries = Retry(
             total=10,
             backoff_factor=0.5,
-            status_forcelist=[413, 429, 503, 403, 500, 501, 502, 503, 504],
+            status_forcelist=[413, 429, 503, 403, 500, 501, 502, 503, 504, 524],
         )
         s.mount("http://", HTTPAdapter(max_retries=retries))
         s.mount("https://", HTTPAdapter(max_retries=retries))
@@ -108,7 +116,7 @@ class Api:
         return self._get("/v1/trends")
 
     def suggested(self, maximum: int = 50) -> dict:
-        """Lookup a user's information."""
+        """Return a list of suggested users to follow."""
 
         return self._get(f"/v2/suggestions?limit={maximum}")
 
@@ -131,3 +139,62 @@ class Api:
                 n_output += 1
                 if maximum is not None and n_output >= maximum:
                     return
+
+    def pull_statuses(
+        self, username: str, created_after: date, replies: bool
+    ) -> List[dict]:
+        """Pull the given user's statuses. Returns an empty list if not found."""
+
+        params = {}
+        all_posts = []
+        id = self.lookup(username)["id"]
+        while True:
+            try:
+                url = f"/v1/accounts/{id}/statuses"
+                if not replies:
+                    url += "?exclude_replies=true"
+                result = self._get(url, params=params)
+            except json.JSONDecodeError as e:
+                logger.error(f"Unable to pull user #{id}'s statuses': {e}")
+                break
+            except Exception as e:
+                logger.error(f"Misc. error while pulling statuses for {id}: {e}")
+                break
+
+            if "error" in result:
+                logger.error(
+                    f"API returned an error while pulling user #{id}'s statuses: {result}"
+                )
+                break
+
+            if len(result) == 0:
+                break
+
+            if not isinstance(result, list):
+                logger.error(f"Result is not a list (it's a {type(result)}): {result}")
+
+            posts = sorted(result, key=lambda k: k["id"])
+            params["max_id"] = posts[0]["id"]
+
+            most_recent_date = (
+                date_parse.parse(posts[-1]["created_at"])
+                .replace(tzinfo=timezone.utc)
+                .date()
+            )
+            if created_after and most_recent_date < created_after:
+                # Current and all future batches are too old
+                break
+
+            for post in posts:
+                post["_pulled"] = datetime.now().isoformat()
+                date_created = (
+                    date_parse.parse(post["created_at"])
+                    .replace(tzinfo=timezone.utc)
+                    .date()
+                )
+                if created_after and date_created < created_after:
+                    continue
+
+                all_posts.append(post)
+
+        return all_posts
