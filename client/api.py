@@ -126,12 +126,14 @@ class Api:
                 if maximum is not None and n_output >= maximum:
                     return
 
-    def pull_statuses(self, username: str, created_after: date, replies: bool) -> List[dict]:
+    def pull_statuses(
+        self, username: str, created_after: date, replies: bool
+    ) -> List[dict]:
         """Pull the given user's statuses. Returns an empty list if not found."""
 
         params = {}
         all_posts = []
-        id = self.lookup(username)['id']
+        id = self.lookup(username)["id"]
         while True:
             try:
                 url = f"/v1/accounts/{id}/statuses"
@@ -161,7 +163,9 @@ class Api:
             params["max_id"] = posts[0]["id"]
 
             most_recent_date = (
-                date_parse.parse(posts[-1]["created_at"]).replace(tzinfo=timezone.utc).date()
+                date_parse.parse(posts[-1]["created_at"])
+                .replace(tzinfo=timezone.utc)
+                .date()
             )
             if created_after and most_recent_date < created_after:
                 # Current and all future batches are too old
@@ -170,7 +174,9 @@ class Api:
             for post in posts:
                 post["_pulled"] = datetime.now().isoformat()
                 date_created = (
-                    date_parse.parse(post["created_at"]).replace(tzinfo=timezone.utc).date()
+                    date_parse.parse(post["created_at"])
+                    .replace(tzinfo=timezone.utc)
+                    .date()
                 )
                 if created_after and date_created < created_after:
                     continue
