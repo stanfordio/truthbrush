@@ -68,8 +68,12 @@ class Api:
 
         return resp.json()
 
-    def _get_paginated(self, url: str, params: dict = None) -> Any:
+    def _get_paginated(self, url: str, params: dict = None, resume: str = None) -> Any:
         next_link = BASE_URL + url
+
+        if resume is not None:
+            next_link += f"?max_id={resume}"
+
         while next_link is not None:
             resp = self._make_session().get(
                 next_link,
@@ -109,13 +113,19 @@ class Api:
         return self._get(f"/v2/suggestions?limit={maximum}")
 
     def user_followers(
-        self, user_handle: str = None, user_id: str = None, maximum: int = 1000
+        self,
+        user_handle: str = None,
+        user_id: str = None,
+        maximum: int = 1000,
+        resume: str = None,
     ) -> Iterator[dict]:
         assert user_handle is not None or user_id is not None
         user_id = user_id if user_id is not None else self.lookup(user_handle)["id"]
 
         n_output = 0
-        for followers_batch in self._get_paginated(f"/v1/accounts/{user_id}/followers"):
+        for followers_batch in self._get_paginated(
+            f"/v1/accounts/{user_id}/followers", resume=resume
+        ):
             for f in followers_batch:
                 yield f
                 n_output += 1

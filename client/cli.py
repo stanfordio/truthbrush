@@ -49,8 +49,13 @@ def suggestions():
 @cli.command()
 @click.argument("handle")
 @click.option("--maximum", help="the maximum number of followers to pull", type=int)
-def followers(handle: str, maximum: int = None):
+@click.option(
+    "--resume",
+    help="the `max_id` cursor to resume from, if necessary (pull this from logs to resume a failed/stalled export)",
+    type=str,
+)
+def followers(handle: str, maximum: int = None, resume: str = None):
     """Pull a user's followers."""
 
-    for follower in api.user_followers(handle, maximum=maximum):
+    for follower in api.user_followers(handle, maximum=maximum, resume=resume):
         print(json.dumps(follower))
