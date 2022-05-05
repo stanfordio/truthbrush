@@ -4,17 +4,20 @@ from typing import Any, Iterator, List
 from loguru import logger
 from requests.sessions import HTTPAdapter
 from dateutil import parser as date_parse
-import requests
-import json
 from datetime import datetime, timezone, date
 from urllib3 import Retry
+import requests
+import json
 import logging
+import os
 
 logging.basicConfig(level=logging.DEBUG)
 
 
 BASE_URL = "https://truthsocial.com/api"
 USER_AGENT = "TruthSocial/71 CFNetwork/1331.0.7 Darwin/21.4.0"
+
+proxies = {"http": os.getenv("http_proxy"), "https": os.getenv("https_proxy")}
 
 
 class Api:
@@ -26,6 +29,7 @@ class Api:
 
     def _make_session(self):
         s = requests.Session()
+        s.proxies.update(proxies)
         retries = Retry(
             total=10,
             backoff_factor=0.5,
