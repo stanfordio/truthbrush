@@ -14,18 +14,26 @@ import os
 logging.basicConfig(level=logging.DEBUG)
 
 
-BASE_URL = "https://truthsocial.com/api"
+BASE_URL = "https://truthsocial.com"
+API_BASE_URL = "https://truthsocial.com/api"
 USER_AGENT = "TruthSocial/71 CFNetwork/1331.0.7 Darwin/21.4.0"
+
+# Oauth client credentials, from https://truthsocial.com/packs/js/application-e63292e218e83e726270.js
+CLIENT_ID = "9X1Fdd-pxNsAgEDNi_SfhJWi8T-vLuV2WVzKIbkTCw4"
+CLIENT_SECRET = "ozF8jzI4968oTKFkEnsBC-UbLPCdrSv0MkXGQu2o_-M"
 
 proxies = {"http": os.getenv("http_proxy"), "https": os.getenv("https_proxy")}
 
 
 class Api:
-    def __init__(self, auth_id):
-        self.auth_id = auth_id
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
         self.ratelimit_max = 300
         self.ratelimit_remaining = None
         self.ratelimit_reset = None
+        if username and password:
+            self.auth_id = self.get_auth_id(username, password)
 
     def _make_session(self):
         s = requests.Session()
@@ -63,7 +71,7 @@ class Api:
 
     def _get(self, url: str, params: dict = None) -> Any:
         resp = self._make_session().get(
-            BASE_URL + url,
+            API_BASE_URL + url,
             params=params,
             headers={
                 "authorization": "Bearer " + self.auth_id,
@@ -77,7 +85,7 @@ class Api:
         return resp.json()
 
     def _get_paginated(self, url: str, params: dict = None, resume: str = None) -> Any:
-        next_link = BASE_URL + url
+        next_link = API_BASE_URL + url
 
         if resume is not None:
             next_link += f"?max_id={resume}"
@@ -198,3 +206,34 @@ class Api:
                 all_posts.append(post)
 
         return all_posts
+
+    def get_auth_id(self, username: str, password: str) -> str:
+        """Logs in to Truth account and returns the session token"""
+        url = BASE_URL + "/oauth/token"
+        try:
+
+            payload = {
+                "client_id": CLIENT_ID,
+                "client_secret": CLIENT_SECRET,
+                "grant_type": "password",
+                "username": username,
+                "password": password,
+            }
+
+            sess_req = requests.request(
+                "POST",
+                url,
+                params=payload,
+                headers={
+                    "user-agent": USER_AGENT,
+                },
+            )
+            sess_req.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            logger.error(f"Failed login request: {str(e)}")
+            return None
+
+        if not sess_req.json()["access_token"]:
+            raise ValueError("Invalid truthsocial.com credentials provided!")
+
+        return sess_req.json()["access_token"]

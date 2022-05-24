@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from .api import Api
 
 load_dotenv()  # take environment variables from .env.
-api = Api(os.getenv("TRUTHSOCIAL_TOKEN"))
+api = Api(os.getenv("TRUTHSOCIAL_USERNAME"), os.getenv("TRUTHSOCIAL_PASSWORD"))
 
 
 @click.group()
