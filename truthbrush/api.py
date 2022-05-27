@@ -148,6 +148,26 @@ class Api:
                 if maximum is not None and n_output >= maximum:
                     return
 
+    def user_following(
+        self,
+        user_handle: str = None,
+        user_id: str = None,
+        maximum: int = 1000,
+        resume: str = None,
+    ) -> Iterator[dict]:
+        assert user_handle is not None or user_id is not None
+        user_id = user_id if user_id is not None else self.lookup(user_handle)["id"]
+
+        n_output = 0
+        for followers_batch in self._get_paginated(
+            f"/v1/accounts/{user_id}/following", resume=resume
+        ):
+            for f in followers_batch:
+                yield f
+                n_output += 1
+                if maximum is not None and n_output >= maximum:
+                    return
+
     def pull_statuses(
         self, username: str, created_after: date, replies: bool
     ) -> List[dict]:
