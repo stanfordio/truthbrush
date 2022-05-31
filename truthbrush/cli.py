@@ -39,6 +39,13 @@ def user(handle: str):
 
     print(json.dumps(api.lookup(handle)))
 
+@cli.command()
+@click.argument("term")
+@click.option("--limit", help="Limit the number of items returned", type=int)
+@click.option("--resolve", help="Resolve", type=bool)
+def search(term: str, limit: int, resolve: bool):
+    """Search for users"""
+    print(json.dumps(api.search(term, limit, resolve)))
 
 @cli.command()
 def suggestions():
