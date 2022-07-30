@@ -23,8 +23,10 @@ CLIENT_SECRET = "ozF8jzI4968oTKFkEnsBC-UbLPCdrSv0MkXGQu2o_-M"
 
 proxies = {"http": os.getenv("http_proxy"), "https": os.getenv("https_proxy")}
 
+
 class LoginErrorException(Exception):
     pass
+
 
 class Api:
     def __init__(self, username: str = None, password: str = None):
@@ -36,6 +38,7 @@ class Api:
         if password == None:
             raise LoginErrorException("Password is missing.")
         self.auth_id = self.get_auth_id(username, password)
+
     def _make_session(self):
         s = requests.Session()
         s.proxies.update(proxies)
@@ -114,15 +117,25 @@ class Api:
         assert user_handle is not None
         return self._get("/v1/accounts/lookup", params=dict(acct=user_handle))
 
-    def search_users(self, term: str = None, limit: int = 4, resolve: bool = 4) -> Optional[dict]:
-        """Search users."""
+    def search(
+        self,
+        searchtype: str = None,
+        query: str = None,
+        limit: int = 4,
+        resolve: bool = 4,
+    ) -> Optional[dict]:
+        """Search users, statuses or hashtags."""
 
-        assert term is not None
-        return self._get("/v1/accounts/search", params=dict(
-            q=term,
-            limit=limit,
-            resolve=resolve
-        ))
+        assert query is not None and searchtype is not None
+        return self._get(
+            "/v2/search",
+            params=dict(
+                q=query,
+                resolve=resolve,
+                limit=limit,
+                type=searchtype,
+            ),
+        )
 
     def trending(self):
         """Return trending truths."""

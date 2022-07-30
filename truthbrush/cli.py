@@ -39,13 +39,21 @@ def user(handle: str):
 
     print(json.dumps(api.lookup(handle)))
 
+
 @cli.command()
-@click.argument("term")
+@click.argument("query")
+@click.option(
+    "--searchtype",
+    help="Type of search query (accounts, statuses, or hashtags)",
+    searchtype=click.Choice(["accounts", "statuses", "hashtags"]),
+)
 @click.option("--limit", help="Limit the number of items returned", type=int)
 @click.option("--resolve", help="Resolve", type=bool)
-def search(term: str, limit: int, resolve: bool):
-    """Search for users"""
-    print(json.dumps(api.search_users(term, limit, resolve)))
+def search(searchtype: str, query: str, limit: int, resolve: bool):
+    """Search for users, statuses or hashtags"""
+
+    print(json.dumps(api.search(searchtype, query, limit, resolve)))
+
 
 @cli.command()
 def suggestions():
