@@ -45,7 +45,7 @@ def user(handle: str):
 @click.option(
     "--searchtype",
     help="Type of search query (accounts, statuses, or hashtags)",
-    searchtype=click.Choice(["accounts", "statuses", "hashtags"]),
+    type=click.Choice(["accounts", "statuses", "hashtags"]),
 )
 @click.option("--limit", help="Limit the number of items returned", type=int)
 @click.option("--resolve", help="Resolve", type=bool)
