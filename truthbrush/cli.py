@@ -45,7 +45,7 @@ def user(handle: str):
 @click.option("--resolve", help="Resolve", type=bool)
 def search(term: str, limit: int, resolve: bool):
     """Search for users"""
-    print(json.dumps(api.search(term, limit, resolve)))
+    print(json.dumps(api.search_users(term, limit, resolve)))
 
 @cli.command()
 def suggestions():
