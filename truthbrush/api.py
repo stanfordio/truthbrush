@@ -114,7 +114,7 @@ class Api:
         assert user_handle is not None
         return self._get("/v1/accounts/lookup", params=dict(acct=user_handle))
 
-    def search(self, term: str = None, limit: int = 4, resolve: bool = 4) -> Optional[dict]:
+    def search_users(self, term: str = None, limit: int = 4, resolve: bool = 4) -> Optional[dict]:
         """Search users."""
 
         assert term is not None
