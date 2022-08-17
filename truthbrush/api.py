@@ -123,6 +123,7 @@ class Api:
         query: str = None,
         limit: int = 4,
         resolve: bool = 4,
+        offset: int=0,
     ) -> Optional[dict]:
         """Search users, statuses or hashtags."""
 
@@ -134,6 +135,7 @@ class Api:
                 resolve=resolve,
                 limit=limit,
                 type=searchtype,
+                offset=offset
             ),
         )
 
