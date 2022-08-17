@@ -11,7 +11,9 @@ import json
 import logging
 import os
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(
+    level=(logging.DEBUG if os.getenv("DEBUG").lower() != "false" else logging.INFO)
+)
 
 BASE_URL = "https://truthsocial.com"
 API_BASE_URL = "https://truthsocial.com/api"
@@ -33,11 +35,18 @@ class Api:
         self.ratelimit_max = 300
         self.ratelimit_remaining = None
         self.ratelimit_reset = None
-        if username == None:
+        self.__username = username
+        self.__password = password
+        self.auth_id = ""
+
+    def __check_login(self):
+        """Runs before any login-walled function to check for login credentials and generates an auth ID token"""
+        if self.__username == None:
             raise LoginErrorException("Username is missing.")
-        if password == None:
+        if self.__password == None:
             raise LoginErrorException("Password is missing.")
-        self.auth_id = self.get_auth_id(username, password)
+        if self.auth_id == "":
+            self.auth_id = self.get_auth_id(self.__username, self.__password)
 
     def _make_session(self):
         s = requests.Session()
@@ -114,6 +123,7 @@ class Api:
     def lookup(self, user_handle: str = None) -> Optional[dict]:
         """Lookup a user's information."""
 
+        self.__check_login()
         assert user_handle is not None
         return self._get("/v1/accounts/lookup", params=dict(acct=user_handle))
 
@@ -126,6 +136,7 @@ class Api:
     ) -> Optional[dict]:
         """Search users, statuses or hashtags."""
 
+        self.__check_login()
         assert query is not None and searchtype is not None
         return self._get(
             "/v2/search",
@@ -140,16 +151,19 @@ class Api:
     def trending(self):
         """Return trending truths."""
 
+        self.__check_login()
         return self._get("/v1/truth/trending/truths")
 
     def tags(self):
         """Return trending tags."""
 
+        self.__check_login()
         return self._get("/v1/trends")
 
     def suggested(self, maximum: int = 50) -> dict:
         """Return a list of suggested users to follow."""
 
+        self.__check_login()
         return self._get(f"/v2/suggestions?limit={maximum}")
 
     def user_followers(
@@ -159,6 +173,8 @@ class Api:
         maximum: int = 1000,
         resume: str = None,
     ) -> Iterator[dict]:
+
+        self.__check_login()
         assert user_handle is not None or user_id is not None
         user_id = user_id if user_id is not None else self.lookup(user_handle)["id"]
 
@@ -179,6 +195,8 @@ class Api:
         maximum: int = 1000,
         resume: str = None,
     ) -> Iterator[dict]:
+
+        self.__check_login()
         assert user_handle is not None or user_id is not None
         user_id = user_id if user_id is not None else self.lookup(user_handle)["id"]
 
@@ -197,6 +215,7 @@ class Api:
     ) -> List[dict]:
         """Pull the given user's statuses. Returns an empty list if not found."""
 
+        self.__check_login()
         params = {}
         all_posts = []
         id = self.lookup(username)["id"]
