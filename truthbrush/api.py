@@ -135,7 +135,7 @@ class Api:
                 resolve=resolve,
                 limit=limit,
                 type=searchtype,
-                offset=offset
+                offset=offset,
             ),
         )
 
