@@ -133,11 +133,28 @@ class Api:
         query: str = None,
         limit: int = 4,
         resolve: bool = 4,
+        offset: int=0,
+        min_id: str='0',
+        max_id: str=None
     ) -> Optional[dict]:
         """Search users, statuses or hashtags."""
 
         self.__check_login()
         assert query is not None and searchtype is not None
+        if max_id==None:
+            return self._get(
+                "/v2/search",
+                params=dict(
+                    q=query,
+                    resolve=resolve,
+                    limit=limit,
+                    type=searchtype,
+                    offset=offset,
+                    min_id=min_id,
+                    
+                ),
+            )
+        
         return self._get(
             "/v2/search",
             params=dict(
@@ -145,9 +162,13 @@ class Api:
                 resolve=resolve,
                 limit=limit,
                 type=searchtype,
+                offset=offset,
+                min_id=min_id,
+                max_id=max_id,
             ),
         )
-
+        
+        
     def trending(self):
         """Return trending truths."""
 
