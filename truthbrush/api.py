@@ -143,20 +143,20 @@ class Api:
                     
                 ),
             )
-        else:
-            return self._get(
-                "/v2/search",
-                params=dict(
-                    q=query,
-                    resolve=resolve,
-                    limit=limit,
-                    type=searchtype,
-                    offset=offset,
-                    min_id=min_id,
-                    max_id=max_id,
-                ),
-            )
-            
+        
+        return self._get(
+            "/v2/search",
+            params=dict(
+                q=query,
+                resolve=resolve,
+                limit=limit,
+                type=searchtype,
+                offset=offset,
+                min_id=min_id,
+                max_id=max_id,
+            ),
+        )
+        
         
     def trending(self):
         """Return trending truths."""
