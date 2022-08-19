@@ -4,7 +4,6 @@ import json
 import os
 import click
 from datetime import date
-import pkg_resources
 from dotenv import load_dotenv
 
 from .api import Api
@@ -109,4 +108,5 @@ def following(handle: str, maximum: int = None, resume: str = None):
 )
 def statuses(username: str, replies: bool = False, created_after: date = None):
     """Pull a user's statuses"""
-    print(json.dumps(api.pull_statuses(username, created_after, replies)))
+    for page in api.pull_statuses(username, created_after, replies):
+        print(json.dumps(page))

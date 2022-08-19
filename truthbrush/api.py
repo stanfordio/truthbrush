@@ -1,4 +1,3 @@
-from email.generator import Generator
 from time import sleep
 from typing import Any, Iterator, List, Optional
 from loguru import logger
@@ -197,7 +196,6 @@ class Api:
         resume: str = None,
     ) -> Iterator[dict]:
 
-        self.__check_login()
         assert user_handle is not None or user_id is not None
         user_id = user_id if user_id is not None else self.lookup(user_handle)["id"]
 
@@ -219,7 +217,6 @@ class Api:
         resume: str = None,
     ) -> Iterator[dict]:
 
-        self.__check_login()
         assert user_handle is not None or user_id is not None
         user_id = user_id if user_id is not None else self.lookup(user_handle)["id"]
 
@@ -238,9 +235,8 @@ class Api:
     ) -> List[dict]:
         """Pull the given user's statuses. Returns an empty list if not found."""
 
-        self.__check_login()
+        # self.__check_login()
         params = {}
-        all_posts = []
         id = self.lookup(username)["id"]
         while True:
             try:
@@ -289,9 +285,7 @@ class Api:
                 if created_after and date_created < created_after:
                     continue
 
-                all_posts.append(post)
-
-        return all_posts
+                yield post
 
     def get_auth_id(self, username: str, password: str) -> str:
         """Logs in to Truth account and returns the session token"""
