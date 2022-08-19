@@ -134,7 +134,7 @@ class Api:
         self,
         searchtype: str = None,
         query: str = None,
-        limit: int = 4,
+        limit: int = 40,
         resolve: bool = 4,
         offset: int = 0,
         min_id: str = "0",
@@ -144,31 +144,40 @@ class Api:
 
         self.__check_login()
         assert query is not None and searchtype is not None
-        if max_id is None:
-            return self._get(
-                "/v2/search",
-                params=dict(
-                    q=query,
-                    resolve=resolve,
-                    limit=limit,
-                    type=searchtype,
-                    offset=offset,
-                    min_id=min_id,
-                ),
-            )
 
-        return self._get(
-            "/v2/search",
-            params=dict(
-                q=query,
-                resolve=resolve,
-                limit=limit,
-                type=searchtype,
-                offset=offset,
-                min_id=min_id,
-                max_id=max_id,
-            ),
-        )
+        page = 0
+        while page < limit:
+
+            if max_id is None:
+                resp = self._get(
+                    "/v2/search",
+                    params=dict(
+                        q=query,
+                        resolve=resolve,
+                        limit=limit,
+                        type=searchtype,
+                        offset=offset,
+                        min_id=min_id,
+                    ),
+                )
+
+            else:
+
+                resp = self._get(
+                    "/v2/search",
+                    params=dict(
+                        q=query,
+                        resolve=resolve,
+                        limit=limit,
+                        type=searchtype,
+                        offset=offset,
+                        min_id=min_id,
+                        max_id=max_id,
+                    ),
+                )
+
+            offset += 40
+            yield resp
 
     def trending(self):
         """Return trending truths."""
