@@ -12,7 +12,11 @@ import logging
 import os
 
 logging.basicConfig(
-    level=(logging.DEBUG if os.getenv("DEBUG").lower() != "false" else logging.INFO)
+    level=(
+        logging.DEBUG
+        if os.getenv("DEBUG") and os.getenv("DEBUG").lower() != "false"
+        else logging.INFO
+    )
 )
 
 BASE_URL = "https://truthsocial.com"
