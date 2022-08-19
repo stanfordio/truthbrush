@@ -44,9 +44,9 @@ class Api:
 
     def __check_login(self):
         """Runs before any login-walled function to check for login credentials and generates an auth ID token"""
-        if self.__username == None:
+        if self.__username is None:
             raise LoginErrorException("Username is missing.")
-        if self.__password == None:
+        if self.__password is None:
             raise LoginErrorException("Password is missing.")
         if self.auth_id == "":
             self.auth_id = self.get_auth_id(self.__username, self.__password)
@@ -235,7 +235,6 @@ class Api:
     ) -> List[dict]:
         """Pull the given user's statuses. Returns an empty list if not found."""
 
-        # self.__check_login()
         params = {}
         id = self.lookup(username)["id"]
         while True:
