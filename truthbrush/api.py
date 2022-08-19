@@ -177,6 +177,9 @@ class Api:
                 )
 
             offset += 40
+            if not resp[searchtype]:
+                break
+
             yield resp
 
     def trending(self):
