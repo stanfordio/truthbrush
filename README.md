@@ -1,35 +1,33 @@
 # truthbrush
-Truthbrush is an API client for Truth Social. Truthbrush is built and maintained by the [Stanford Internet Observatory](https://io.stanford.edu). 
+Truthbrush is an API client for Truth Social. Truthbrush is built and maintained by the [Stanford Internet Observatory](https://io.stanford.edu).
 
-Currently, this tool can: 
+Currently, this tool can:
 
 * Search for users, statuses, or hashtags
 * Pull a user's followers
-* Pull users a given user follows 
+* Pull users a given user follows
 * Pull a user's statuses
 * Pull the list of "People to Follow" or suggested users
-* Pull all "trending" hashtags
-* Pull all "trending" Truth posts
-* Pull all ads
+* Pull "trending" hashtags
+* Pull "trending" Truth posts
+* Pull ads
 * Pull a user's metadata
 
 Truthbrush is designed for academic research, open source intelligence gathering, and data archival. It pulls all of the data from the publicly accessible API.
 
-
-
 ## Installation
 
-Truthbrush is not yet available on PyPI. To install it, clone the repository and run `pip install .`. Provided your `pip` is setup correctly, this will make `truthbrush` available both as a command and as a Python package. **Note that Truthbrush requires Python 3.8 or higher.**
+Truthbrush is not yet available on PyPI. To install it, clone the repository and run `pip3 install .`. Provided your `pip` is setup correctly, this will make `truthbrush` available both as a command and as a Python package. **Note that Truthbrush requires Python 3.8 or higher.**
 
-After installation, you will need to set your Truth Social username and password as environmental variables. 
+After installation, you will need to set your Truth Social username and password as environmental variables.
 
-`EXPORT TRUTHSOCIAL_USERNAME=foo`
-`EXPORT TRUTHSOCIAL_PASSWORD=bar`
+`export TRUTHSOCIAL_USERNAME=foo`
+`export TRUTHSOCIAL_PASSWORD=bar`
 
 ## CLI Usage
 
 ```text
-Usage: truthsocial [OPTIONS] COMMAND [ARGS]...
+Usage: truthbrush [OPTIONS] COMMAND [ARGS]...
 
 Options:
   --help     Show this message and exit.
@@ -39,7 +37,7 @@ Commands:
   followers    Pull a user's followers.
   following    Pull users a given user follows.
   search       Search for users, statuses or hashtags.
-  statuses     Pull a user's statuses
+  statuses     Pull a user's statuses.
   suggestions  Pull the list of suggested users.
   tags         Pull trendy tags.
   trends       Pull trendy Truths.
@@ -62,9 +60,8 @@ truthbrush following HANDLE
 **Search for users, statuses, or hashtags**
 
 ```bash
-truthbrush search
+truthbrush search --searchtype [accounts|statuses|hashtags] QUERY
 ```
-
 
 **Pull all statuses (posts) from a user**
 
@@ -72,17 +69,17 @@ truthbrush search
 truthbrush statuses HANDLE
 ```
 
-**Pull all "People to Follow" (suggested) users**
+**Pull "People to Follow" (suggested) users**
 
 ```bash
 truthbrush suggestions
 ```
-**Pull all trendy tags**
+**Pull trendy tags**
 
 ```bash
 truthbrush tags
 ```
-**Pull all ads**
+**Pull ads**
 
 ```bash
 truthbrush ads
