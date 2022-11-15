@@ -22,6 +22,7 @@ Truthbrush is not yet available on PyPI. To install it, clone the repository and
 After installation, you will need to set your Truth Social username and password as environmental variables.
 
 `export TRUTHSOCIAL_USERNAME=foo`
+
 `export TRUTHSOCIAL_PASSWORD=bar`
 
 ## CLI Usage
