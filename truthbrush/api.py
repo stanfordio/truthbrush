@@ -34,28 +34,28 @@ class LoginErrorException(Exception):
 
 
 class Api:
-    def __init__(self, username: str = None, password: str = None):
+    def __init__(self, username: str = None, password: str = None, token: str = None):
         self.ratelimit_max = 300
         self.ratelimit_remaining = None
         self.ratelimit_reset = None
         self.__username = username
         self.__password = password
-        self.auth_id = ""
+        self.auth_id = token
 
     def __check_login(self):
         """Runs before any login-walled function to check for login credentials and generates an auth ID token"""
-        if self.__username is None:
-            raise LoginErrorException("Username is missing.")
-        if self.__password is None:
-            raise LoginErrorException("Password is missing.")
-        if self.auth_id == "":
+        if self.auth_id is None:
+            if self.__username is None:
+                raise LoginErrorException("Username is missing.")
+            if self.__password is None:
+                raise LoginErrorException("Password is missing.")
             self.auth_id = self.get_auth_id(self.__username, self.__password)
 
     def _make_session(self):
         s = requests.Session()
         s.proxies.update(proxies)
         retries = Retry(
-            total=10,
+            total=5,
             backoff_factor=0.5,
             status_forcelist=[413, 429, 503, 403, 500, 501, 502, 503, 504, 524],
         )
