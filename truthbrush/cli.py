@@ -9,7 +9,11 @@ from dotenv import load_dotenv
 from .api import Api
 
 load_dotenv()  # take environment variables from .env.
-api = Api(os.getenv("TRUTHSOCIAL_USERNAME"), os.getenv("TRUTHSOCIAL_PASSWORD"))
+api = Api(
+    os.getenv("TRUTHSOCIAL_USERNAME"),
+    os.getenv("TRUTHSOCIAL_PASSWORD"),
+    os.getenv("TRUTHSOCIAL_TOKEN"),
+)
 
 
 @click.group()
@@ -69,6 +73,7 @@ def ads():
     """Pull ads."""
 
     print(json.dumps(api.ads()))
+
 
 @cli.command()
 @click.argument("handle")
