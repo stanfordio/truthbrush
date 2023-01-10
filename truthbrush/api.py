@@ -196,14 +196,13 @@ class Api:
 
     def suggested(self, maximum: int = 50) -> dict:
         """Return a list of suggested users to follow."""
-
         self.__check_login()
         return self._get(f"/v2/suggestions?limit={maximum}")
 
     def ads(self, device: str = "desktop") -> dict:
         """Return a list of ads from Rumble's Ad Platform via Truth Social API."""
 
-        return self._get(f"/v1/truth/ads?device={device}")
+        return self._get(f"/v3/truth/ads?device={device}")
 
     def user_followers(
         self,
@@ -314,12 +313,14 @@ class Api:
                 "grant_type": "password",
                 "username": username,
                 "password": password,
+                "redirect_uri": "urn:ietf:wg:oauth:2.0:oob",
+                "scope": "read write follow push"
             }
 
             sess_req = requests.request(
                 "POST",
                 url,
-                params=payload,
+                json=payload,
                 headers={
                     "user-agent": USER_AGENT,
                 },
