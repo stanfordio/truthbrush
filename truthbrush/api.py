@@ -5,7 +5,7 @@ from requests.sessions import HTTPAdapter
 from dateutil import parser as date_parse
 from datetime import datetime, timezone, date
 from urllib3 import Retry
-import requests
+from curl_cffi import requests
 import json
 import logging
 import os
@@ -20,9 +20,9 @@ logging.basicConfig(
 
 BASE_URL = "https://truthsocial.com"
 API_BASE_URL = "https://truthsocial.com/api"
-USER_AGENT = "TruthSocial/71 CFNetwork/1331.0.7 Darwin/21.4.0"
+USER_AGENT = "TruthSocial/151 CFNetwork/1406.0.4 Darwin/22.4.0"
 
-# Oauth client credentials, from https://truthsocial.com/packs/js/application-e63292e218e83e726270.js
+# Oauth client credentials, from https://truthsocial.com/packs/js/application-d77ef3e9148ad1d0624c.js
 CLIENT_ID = "9X1Fdd-pxNsAgEDNi_SfhJWi8T-vLuV2WVzKIbkTCw4"
 CLIENT_SECRET = "ozF8jzI4968oTKFkEnsBC-UbLPCdrSv0MkXGQu2o_-M"
 
@@ -53,14 +53,6 @@ class Api:
 
     def _make_session(self):
         s = requests.Session()
-        s.proxies.update(proxies)
-        retries = Retry(
-            total=5,
-            backoff_factor=0.5,
-            status_forcelist=[413, 429, 503, 403, 500, 501, 502, 503, 504, 524],
-        )
-        s.mount("http://", HTTPAdapter(max_retries=retries))
-        s.mount("https://", HTTPAdapter(max_retries=retries))
         return s
 
     def _check_ratelimit(self, resp):
@@ -89,9 +81,10 @@ class Api:
         resp = self._make_session().get(
             API_BASE_URL + url,
             params=params,
+            proxies=proxies,
             headers={
-                "authorization": "Bearer " + self.auth_id,
-                "user-agent": USER_AGENT,
+                "Authorization": "Bearer " + self.auth_id,
+                "User-Agent": USER_AGENT,
             },
         )
 
@@ -110,9 +103,10 @@ class Api:
             resp = self._make_session().get(
                 next_link,
                 params=params,
+                proxies=proxies,
                 headers={
-                    "authorization": "Bearer " + self.auth_id,
-                    "user-agent": USER_AGENT,
+                    "Authorization": "Bearer " + self.auth_id,
+                    "User-Agent": USER_AGENT,
                 },
             )
 
@@ -321,6 +315,7 @@ class Api:
                 "POST",
                 url,
                 json=payload,
+                proxies=proxies,
                 headers={
                     "user-agent": USER_AGENT,
                 },
