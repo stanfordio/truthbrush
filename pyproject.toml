@@ -10,7 +10,7 @@ truthbrush = "truthbrush.cli:cli"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-requests = "^2.27.1"
+requests = "^2.31.0"
 click = "^8.0.4"
 loguru = "^0.6.0"
 python-dotenv = "^0.19.2"
