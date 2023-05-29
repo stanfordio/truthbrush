@@ -75,36 +75,36 @@ def ads():
     print(json.dumps(api.ads()))
 
 
-@cli.command()
-@click.argument("handle")
-@click.option("--maximum", help="the maximum number of followers to pull", type=int)
-@click.option(
-    "--resume",
-    help="the `max_id` cursor to resume from, if necessary (pull this from logs to resume a failed/stalled export)",
-    type=str,
-)
-def followers(handle: str, maximum: int = None, resume: str = None):
-    """Pull a user's followers."""
+# @cli.command()
+# @click.argument("handle")
+# @click.option("--maximum", help="the maximum number of followers to pull", type=int)
+# @click.option(
+#     "--resume",
+#     help="the `max_id` cursor to resume from, if necessary (pull this from logs to resume a failed/stalled export)",
+#     type=str,
+# )
+# def followers(handle: str, maximum: int = None, resume: str = None):
+#     """Pull a user's followers."""
 
-    for follower in api.user_followers(handle, maximum=maximum, resume=resume):
-        print(json.dumps(follower))
+#     for follower in api.user_followers(handle, maximum=maximum, resume=resume):
+#         print(json.dumps(follower))
 
 
-@cli.command()
-@click.argument("handle")
-@click.option(
-    "--maximum", help="the maximum number of followed users to pull", type=int
-)
-@click.option(
-    "--resume",
-    help="the `max_id` cursor to resume from, if necessary (pull this from logs to resume a failed/stalled export)",
-    type=str,
-)
-def following(handle: str, maximum: int = None, resume: str = None):
-    """Pull users a given user follows."""
+# @cli.command()
+# @click.argument("handle")
+# @click.option(
+#     "--maximum", help="the maximum number of followed users to pull", type=int
+# )
+# @click.option(
+#     "--resume",
+#     help="the `max_id` cursor to resume from, if necessary (pull this from logs to resume a failed/stalled export)",
+#     type=str,
+# )
+# def following(handle: str, maximum: int = None, resume: str = None):
+#     """Pull users a given user follows."""
 
-    for followed in api.user_following(handle, maximum=maximum, resume=resume):
-        print(json.dumps(followed))
+#     for followed in api.user_following(handle, maximum=maximum, resume=resume):
+#         print(json.dumps(followed))
 
 
 @cli.command()

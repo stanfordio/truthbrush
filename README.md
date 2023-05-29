@@ -4,8 +4,6 @@ Truthbrush is an API client for Truth Social. Truthbrush is built and maintained
 Currently, this tool can:
 
 * Search for users, statuses, or hashtags
-* Pull a user's followers
-* Pull users a given user follows
 * Pull a user's statuses
 * Pull the list of "People to Follow" or suggested users
 * Pull "trending" hashtags
@@ -35,8 +33,6 @@ Options:
 
 
 Commands:
-  followers    Pull a user's followers.
-  following    Pull users a given user follows.
   search       Search for users, statuses or hashtags.
   statuses     Pull a user's statuses.
   suggestions  Pull the list of suggested users.
@@ -45,18 +41,6 @@ Commands:
   ads          Pull ads.
   user         Pull a user's metadata.
 ``````
-
-**Pull all a user's followers**
-
-```bash
-truthbrush followers HANDLE
-```
-
-**Pull all users a given user followers**
-
-```bash
-truthbrush following HANDLE
-```
 
 **Search for users, statuses, or hashtags**
 
