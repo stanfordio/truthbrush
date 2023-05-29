@@ -1,10 +1,8 @@
 from time import sleep
 from typing import Any, Iterator, List, Optional
 from loguru import logger
-from requests.sessions import HTTPAdapter
 from dateutil import parser as date_parse
 from datetime import datetime, timezone, date
-from urllib3 import Retry
 from curl_cffi import requests
 import json
 import logging
@@ -20,7 +18,7 @@ logging.basicConfig(
 
 BASE_URL = "https://truthsocial.com"
 API_BASE_URL = "https://truthsocial.com/api"
-USER_AGENT = "TruthSocial/151 CFNetwork/1406.0.4 Darwin/22.4.0"
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
 
 # Oauth client credentials, from https://truthsocial.com/packs/js/application-d77ef3e9148ad1d0624c.js
 CLIENT_ID = "9X1Fdd-pxNsAgEDNi_SfhJWi8T-vLuV2WVzKIbkTCw4"
@@ -82,6 +80,7 @@ class Api:
             API_BASE_URL + url,
             params=params,
             proxies=proxies,
+            impersonate="chrome110",
             headers={
                 "Authorization": "Bearer " + self.auth_id,
                 "User-Agent": USER_AGENT,
@@ -141,7 +140,6 @@ class Api:
 
         page = 0
         while page < limit:
-
             if max_id is None:
                 resp = self._get(
                     "/v2/search",
@@ -156,7 +154,6 @@ class Api:
                 )
 
             else:
-
                 resp = self._get(
                     "/v2/search",
                     params=dict(
@@ -205,7 +202,6 @@ class Api:
         maximum: int = 1000,
         resume: str = None,
     ) -> Iterator[dict]:
-
         assert user_handle is not None or user_id is not None
         user_id = user_id if user_id is not None else self.lookup(user_handle)["id"]
 
@@ -226,7 +222,6 @@ class Api:
         maximum: int = 1000,
         resume: str = None,
     ) -> Iterator[dict]:
-
         assert user_handle is not None or user_id is not None
         user_id = user_id if user_id is not None else self.lookup(user_handle)["id"]
 
@@ -300,7 +295,6 @@ class Api:
         """Logs in to Truth account and returns the session token"""
         url = BASE_URL + "/oauth/token"
         try:
-
             payload = {
                 "client_id": CLIENT_ID,
                 "client_secret": CLIENT_SECRET,
@@ -308,7 +302,7 @@ class Api:
                 "username": username,
                 "password": password,
                 "redirect_uri": "urn:ietf:wg:oauth:2.0:oob",
-                "scope": "read write follow push"
+                "scope": "read write follow push",
             }
 
             sess_req = requests.request(
