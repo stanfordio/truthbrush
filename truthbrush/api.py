@@ -103,6 +103,7 @@ class Api:
                 next_link,
                 params=params,
                 proxies=proxies,
+                impersonate="chrome110",
                 headers={
                     "Authorization": "Bearer " + self.auth_id,
                     "User-Agent": USER_AGENT,
