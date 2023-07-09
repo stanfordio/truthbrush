@@ -109,8 +109,13 @@ class Api:
                     "User-Agent": USER_AGENT,
                 },
             )
-
-            next_link = resp.links.get("next", {}).get("url")
+            link_header = resp.headers.get('Link', '')
+            next_link = None
+            for link in link_header.split(','):
+                parts = link.split(';')
+                if len(parts) == 2 and parts[1].strip() == 'rel="next"':
+                    next_link = parts[0].strip('<>')
+                    break
             logger.info(f"Next: {next_link}, resp: {resp}, headers: {resp.headers}")
             yield resp.json()
 
@@ -225,6 +230,7 @@ class Api:
     ) -> Iterator[dict]:
         assert user_handle is not None or user_id is not None
         user_id = user_id if user_id is not None else self.lookup(user_handle)["id"]
+        print(user_id)
 
         n_output = 0
         for followers_batch in self._get_paginated(
