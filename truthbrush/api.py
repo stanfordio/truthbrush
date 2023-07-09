@@ -230,7 +230,6 @@ class Api:
     ) -> Iterator[dict]:
         assert user_handle is not None or user_id is not None
         user_id = user_id if user_id is not None else self.lookup(user_handle)["id"]
-        print(user_id)
 
         n_output = 0
         for followers_batch in self._get_paginated(
