@@ -15,7 +15,7 @@ Truthbrush is designed for academic research, open source intelligence gathering
 
 ## Installation
 
-Truthbrush is not yet available on PyPI. To install it, clone the repository and run `pip3 install .`. Provided your `pip` is setup correctly, this will make `truthbrush` available both as a command and as a Python package. **Note that Truthbrush requires Python 3.8 or higher.**
+Truthbrush is not yet available on PyPI. To install it, run `pip install git+https://github.com/stanfordio/truthbrush.git`, or clone the repository and run `pip3 install .`. Provided your `pip` is setup correctly, this will make `truthbrush` available both as a command and as a Python package. **Note that Truthbrush requires Python 3.8 or higher.**
 
 After installation, you will need to set your Truth Social username and password as environmental variables.
 
