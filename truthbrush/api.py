@@ -109,8 +109,13 @@ class Api:
                     "User-Agent": USER_AGENT,
                 },
             )
-
-            next_link = resp.links.get("next", {}).get("url")
+            link_header = resp.headers.get('Link', '')
+            next_link = None
+            for link in link_header.split(','):
+                parts = link.split(';')
+                if len(parts) == 2 and parts[1].strip() == 'rel="next"':
+                    next_link = parts[0].strip('<>')
+                    break
             logger.info(f"Next: {next_link}, resp: {resp}, headers: {resp.headers}")
             yield resp.json()
 
