@@ -18,7 +18,7 @@ logging.basicConfig(
 
 BASE_URL = "https://truthsocial.com"
 API_BASE_URL = "https://truthsocial.com/api"
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
 
 # Oauth client credentials, from https://truthsocial.com/packs/js/application-d77ef3e9148ad1d0624c.js
 CLIENT_ID = "9X1Fdd-pxNsAgEDNi_SfhJWi8T-vLuV2WVzKIbkTCw4"
@@ -109,12 +109,12 @@ class Api:
                     "User-Agent": USER_AGENT,
                 },
             )
-            link_header = resp.headers.get('Link', '')
+            link_header = resp.headers.get("Link", "")
             next_link = None
-            for link in link_header.split(','):
-                parts = link.split(';')
+            for link in link_header.split(","):
+                parts = link.split(";")
                 if len(parts) == 2 and parts[1].strip() == 'rel="next"':
-                    next_link = parts[0].strip('<>')
+                    next_link = parts[0].strip("<>")
                     break
             logger.info(f"Next: {next_link}, resp: {resp}, headers: {resp.headers}")
             yield resp.json()
@@ -308,7 +308,7 @@ class Api:
                 "username": username,
                 "password": password,
                 "redirect_uri": "urn:ietf:wg:oauth:2.0:oob",
-                "scope": "read write follow push",
+                "scope": "read",
             }
 
             sess_req = requests.request(
@@ -317,11 +317,11 @@ class Api:
                 json=payload,
                 proxies=proxies,
                 headers={
-                    "user-agent": USER_AGENT,
+                    "User-Agent": USER_AGENT,
                 },
             )
             sess_req.raise_for_status()
-        except requests.exceptions.HTTPError as e:
+        except requests.RequestsError as e:
             logger.error(f"Failed login request: {str(e)}")
             return None
 
