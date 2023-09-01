@@ -276,6 +276,7 @@ class Api:
             posts = sorted(result, key=lambda k: k["id"])
             params["max_id"] = posts[0]["id"]
 
+            breakpoint()
             most_recent_date = (
                 date_parse.parse(posts[-1]["created_at"])
                 .replace(tzinfo=timezone.utc)
