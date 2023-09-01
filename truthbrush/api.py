@@ -278,7 +278,7 @@ class Api:
 
             #breakpoint()
             most_recent_date = date_parse.parse(posts[-1]["created_at"]).replace(microsecond=0, tzinfo=timezone.utc)
-            if created_after and most_recent_date < created_after:
+            if created_after and most_recent_date <= created_after:
                 # Current and all future batches are too old
                 break
 
