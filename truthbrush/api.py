@@ -279,7 +279,7 @@ class Api:
             most_recent_date = (
                 date_parse.parse(posts[-1]["created_at"])
                 .replace(tzinfo=timezone.utc)
-                .date()
+                # .date() # let's be more precise, using datetime instead of date, so we can still get statuses posted later in the same day as the latest previously collected status
             )
             if created_after and most_recent_date < created_after:
                 # Current and all future batches are too old
