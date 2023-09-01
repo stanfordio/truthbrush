@@ -290,7 +290,7 @@ class Api:
                 date_created = (
                     date_parse.parse(post["created_at"])
                     .replace(tzinfo=timezone.utc)
-                    .date()
+                    #.date() # let's be more precise, using datetime instead of date, so we can still get statuses posted later in the same day as the latest previously collected status
                 )
                 if created_after and date_created < created_after:
                     continue
