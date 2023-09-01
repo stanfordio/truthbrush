@@ -276,23 +276,15 @@ class Api:
             posts = sorted(result, key=lambda k: k["id"])
             params["max_id"] = posts[0]["id"]
 
-            breakpoint()
-            most_recent_date = (
-                date_parse.parse(posts[-1]["created_at"])
-                .replace(tzinfo=timezone.utc)
-                # .date() # let's be more precise, using datetime instead of date, so we can still get statuses posted later in the same day as the latest previously collected status
-            )
+            #breakpoint()
+            most_recent_date = date_parse.parse(posts[-1]["created_at"]).replace(microsecond=0, tzinfo=timezone.utc)
             if created_after and most_recent_date < created_after:
                 # Current and all future batches are too old
                 break
 
             for post in posts:
                 post["_pulled"] = datetime.now().isoformat()
-                date_created = (
-                    date_parse.parse(post["created_at"])
-                    .replace(tzinfo=timezone.utc)
-                    #.date() # let's be more precise, using datetime instead of date, so we can still get statuses posted later in the same day as the latest previously collected status
-                )
+                date_created = date_parse.parse(post["created_at"]).replace(microsecond=0, tzinfo=timezone.utc)
                 if created_after and date_created < created_after:
                     continue
 
