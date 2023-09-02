@@ -6,9 +6,14 @@ import pytest
 
 from truthbrush.api import Api
 
+
 @pytest.fixture(scope="module")
 def api():
     return Api()
+
+
+def as_datetime(date_str):
+    return date_parse.parse(date_str).replace(tzinfo=timezone.utc)
 
 
 def test_lookup(api):
@@ -32,21 +37,23 @@ def test_pull_statuses(api):
     assert len(full_timeline) > 25 # more than one page
 
     latest = full_timeline[0]
-    latest_at = date_parse.parse(latest["created_at"]).replace(tzinfo=timezone.utc)
+    latest_at = as_datetime(latest["created_at"])
     earliest = full_timeline[-1]
-    earliest_at = date_parse.parse(earliest["created_at"]).replace(tzinfo=timezone.utc)
+    earliest_at = as_datetime(earliest["created_at"])
     assert earliest_at < latest_at
 
     # can use created_after param for filtering out posts:
     # (this test assumes no posts generated between the first pull and now)
+
     next_pull = list(api.pull_statuses(username=username, replies=False, created_after=latest_at, verbose=True))
     assert not any(next_pull)
 
-    #n_lag = 50
-    #recent = full_timeline[n_lag+1]
-    #recent_at = date_parse.parse(recent["created_at"]).replace(tzinfo=timezone.utc)
-    #partial_pull = list(api.pull_statuses(username=username, replies=False, created_after=recent_at, verbose=True))
-    #assert len(partial_pull) == len(full_timeline) - + 1
+    n_posts = 50
+    recent = full_timeline[n_posts]
+    recent_at = as_datetime(recent["created_at"])
+    partial_pull = list(api.pull_statuses(username=username, replies=False, created_after=recent_at, verbose=True))
+    assert len(partial_pull) == n_posts
+    assert recent["id"] not in [post["id"] for post in partial_pull]
 
     # can use id_after param for filtering out posts:
     # (this test assumes no posts generated between the first pull and now)
