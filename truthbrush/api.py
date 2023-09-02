@@ -252,12 +252,13 @@ class Api:
     #    return date_parse.parse(dt).replace(tzinfo=timezone.utc)
 
     def pull_statuses(
-        self, username: str, replies=False, created_after: datetime=None, verbose=False
+        self, username: str, replies=False, verbose=False, created_after: datetime=None, since_id=None,
     ) -> List[dict]:
         """Pull the given user's statuses.
 
             Params:
                 created_after : timezone aware datetime object
+                since_id : number or string
 
             Returns a list of posts in reverse chronological order,
                 or an empty list if not found.
@@ -307,7 +308,7 @@ class Api:
                 # exclude posts created before the specified date
                 # since the page is listed in reverse chronology, we don't need any remaining posts on this page either
                 post_at = date_parse.parse(post["created_at"]).replace(tzinfo=timezone.utc)
-                if created_after and post_at <= created_after:
+                if (created_after and post_at <= created_after) or (since_id and post["id"] <= since_id):
                     keep_going = False # stop the loop, request no more pages
                     break # do not yeild this post or remaining (older) posts on this page
 
@@ -315,7 +316,6 @@ class Api:
                     print(post["id"], post["created_at"])
 
                 yield post
-
 
     def get_auth_id(self, username: str, password: str) -> str:
         """Logs in to Truth account and returns the session token"""
