@@ -251,7 +251,8 @@ class Api:
                     return
 
     def pull_statuses(
-        self, username: str, replies: bool, created_after: datetime=None, since_id=None
+        self, username: str, replies: bool,
+        created_after: datetime=None, id_after=None, verbose=False
     ) -> List[dict]:
         """Pull the given user's statuses.
 
@@ -262,7 +263,7 @@ class Api:
 
         params = {}
         user_id = self.lookup(username)["id"]
-        page_counter=1
+        page_counter = 0
         while True:
             try:
                 url = f"/v1/accounts/{user_id}/statuses"
@@ -292,15 +293,26 @@ class Api:
             posts = sorted(result, key=lambda k: k["id"], reverse=True) # latest first, earliest last
             params["max_id"] = posts[-1]["id"] # max for next pull is the earliest
 
-            #print("----------")
-            #print("PAGE:", page_counter, "...")
+            if verbose:
+                print("----------")
+                print("PAGE:", page_counter, "...")
+                pprint([post["created_at"] for post in posts])
+
+            earliest_at = date_parse.parse(posts[-1]["created_at"]).replace(tzinfo=timezone.utc)
+            if created_after and earliest_at <= created_after:
+                # Current and all future batches are too old
+                break
+
+            # loop through posts in descending order, as long as posts are later than the specified date
             for post in posts:
                 post["_pulled"] = datetime.now().isoformat()
 
-                #print(post["created_at"])
                 post_at = date_parse.parse(post["created_at"]).replace(tzinfo=timezone.utc)
-                if created_after and post_at >= created_after:
-                    break
+                if created_after and post_at < created_after:
+                    continue
+
+                #if id_after and post["id"] < id_after:
+                #    break
 
                 yield post
 
