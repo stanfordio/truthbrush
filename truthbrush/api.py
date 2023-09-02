@@ -247,10 +247,6 @@ class Api:
                 if maximum is not None and n_output >= maximum:
                     return
 
-    #@classmethod / @staticmethod
-    #def as_datetime(self, dt):
-    #    return date_parse.parse(dt).replace(tzinfo=timezone.utc)
-
     def pull_statuses(
         self, username: str, replies=False, verbose=False, created_after: datetime=None, since_id=None,
     ) -> List[dict]:

@@ -13,6 +13,7 @@ def api():
 
 
 def as_datetime(date_str):
+    """Datetime formatter function. Ensures timezone is UTC. Consider moving to Api class."""
     return date_parse.parse(date_str).replace(tzinfo=timezone.utc)
 
 
