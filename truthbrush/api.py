@@ -8,7 +8,6 @@ import json
 import logging
 import os
 from dotenv import load_dotenv
-from pprint import pprint
 
 load_dotenv() # take environment variables from .env.
 
@@ -20,7 +19,6 @@ logging.basicConfig(
     )
 )
 
-
 BASE_URL = "https://truthsocial.com"
 API_BASE_URL = "https://truthsocial.com/api"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
@@ -28,7 +26,6 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 # Oauth client credentials, from https://truthsocial.com/packs/js/application-d77ef3e9148ad1d0624c.js
 CLIENT_ID = "9X1Fdd-pxNsAgEDNi_SfhJWi8T-vLuV2WVzKIbkTCw4"
 CLIENT_SECRET = "ozF8jzI4968oTKFkEnsBC-UbLPCdrSv0MkXGQu2o_-M"
-
 
 proxies = {"http": os.getenv("http_proxy"), "https": os.getenv("https_proxy")}
 
@@ -41,7 +38,7 @@ class LoginErrorException(Exception):
 
 
 class Api:
-    def __init__(self, username: str = TRUTHSOCIAL_USERNAME, password: str = TRUTHSOCIAL_PASSWORD, token: str = TRUTHSOCIAL_TOKEN):
+    def __init__(self, username=TRUTHSOCIAL_USERNAME, password=TRUTHSOCIAL_PASSWORD, token=TRUTHSOCIAL_TOKEN):
         self.ratelimit_max = 300
         self.ratelimit_remaining = None
         self.ratelimit_reset = None
@@ -250,27 +247,36 @@ class Api:
                 if maximum is not None and n_output >= maximum:
                     return
 
+    #@classmethod / @staticmethod
+    #def as_datetime(self, dt):
+    #    return date_parse.parse(dt).replace(tzinfo=timezone.utc)
+
     def pull_statuses(
-        self, username: str, replies: bool,
-        created_after: datetime=None, id_after=None, verbose=False
+        self, username: str, replies=False, created_after: datetime=None, verbose=False
     ) -> List[dict]:
         """Pull the given user's statuses.
 
-            Returns a list of statuses (in ascending order), or an empty list if not found.
+            Params:
+                created_after : timezone aware datetime object
 
-            Params: created_after : currently needs to be a timezone-aware datetime object
+            Returns a list of posts in reverse chronological order,
+                or an empty list if not found.
         """
 
         params = {}
         user_id = self.lookup(username)["id"]
         page_counter = 0
-        while True:
+        keep_going = True
+        while keep_going:
             try:
                 url = f"/v1/accounts/{user_id}/statuses"
                 if not replies:
                     url += "?exclude_replies=true"
+                if verbose:
+                    print("--------------------------")
+                    print(url, params)
                 result = self._get(url, params=params)
-                page_counter+=1
+                page_counter +=1
             except json.JSONDecodeError as e:
                 logger.error(f"Unable to pull user #{user_id}'s statuses': {e}")
                 break
@@ -279,9 +285,7 @@ class Api:
                 break
 
             if "error" in result:
-                logger.error(
-                    f"API returned an error while pulling user #{user_id}'s statuses: {result}"
-                )
+                logger.error(f"API returned an error while pulling user #{user_id}'s statuses: {result}")
                 break
 
             if len(result) == 0:
@@ -290,34 +294,27 @@ class Api:
             if not isinstance(result, list):
                 logger.error(f"Result is not a list (it's a {type(result)}): {result}")
 
-            posts = sorted(result, key=lambda k: k["id"], reverse=True) # latest first, earliest last
-            params["max_id"] = posts[-1]["id"] # max for next pull is the earliest
+            posts = sorted(result, key=lambda k: k["id"], reverse=True) # reverse chronological order (recent first, older last)
+            params["max_id"] = posts[-1]["id"] # when pulling the next page, get posts before this (the oldest)
 
             if verbose:
-                print("----------")
-                print("PAGE:", page_counter, "...")
-                pprint([post["created_at"] for post in posts])
+                print("PAGE", page_counter)
 
-            earliest_at = date_parse.parse(posts[-1]["created_at"]).replace(tzinfo=timezone.utc)
-            if created_after and earliest_at <= created_after:
-                # Current and all future batches are too old
-                break
-
-            # loop through posts in descending order, as long as posts are later than the specified date
             for post in posts:
                 post["_pulled"] = datetime.now().isoformat()
 
+                # only keep posts created after the specified date
+                # exclude posts created before the specified date
+                # since the page is listed in reverse chronology, we don't need any remaining posts on this page either
                 post_at = date_parse.parse(post["created_at"]).replace(tzinfo=timezone.utc)
-                if created_after and post_at < created_after:
-                    continue
+                if created_after and post_at <= created_after:
+                    keep_going = False # stop the loop, request no more pages
+                    break # do not yeild this post or remaining (older) posts on this page
 
-                #if id_after and post["id"] < id_after:
-                #    break
+                if verbose:
+                    print(post["id"], post["created_at"])
 
                 yield post
-
-
-
 
 
     def get_auth_id(self, username: str, password: str) -> str:
