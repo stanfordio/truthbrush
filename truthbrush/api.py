@@ -7,6 +7,10 @@ from curl_cffi import requests
 import json
 import logging
 import os
+from dotenv import load_dotenv
+from pprint import pprint
+
+load_dotenv() # take environment variables from .env.
 
 logging.basicConfig(
     level=(
@@ -16,6 +20,7 @@ logging.basicConfig(
     )
 )
 
+
 BASE_URL = "https://truthsocial.com"
 API_BASE_URL = "https://truthsocial.com/api"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
@@ -24,15 +29,19 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 CLIENT_ID = "9X1Fdd-pxNsAgEDNi_SfhJWi8T-vLuV2WVzKIbkTCw4"
 CLIENT_SECRET = "ozF8jzI4968oTKFkEnsBC-UbLPCdrSv0MkXGQu2o_-M"
 
+
 proxies = {"http": os.getenv("http_proxy"), "https": os.getenv("https_proxy")}
 
+TRUTHSOCIAL_USERNAME = os.getenv("TRUTHSOCIAL_USERNAME")
+TRUTHSOCIAL_PASSWORD = os.getenv("TRUTHSOCIAL_PASSWORD")
+TRUTHSOCIAL_TOKEN = os.getenv("TRUTHSOCIAL_TOKEN")
 
 class LoginErrorException(Exception):
     pass
 
 
 class Api:
-    def __init__(self, username: str = None, password: str = None, token: str = None):
+    def __init__(self, username: str = TRUTHSOCIAL_USERNAME, password: str = TRUTHSOCIAL_PASSWORD, token: str = TRUTHSOCIAL_TOKEN):
         self.ratelimit_max = 300
         self.ratelimit_remaining = None
         self.ratelimit_reset = None
@@ -242,31 +251,35 @@ class Api:
                     return
 
     def pull_statuses(
-        self, username: str, created_after: datetime, replies: bool
+        self, username: str, replies: bool, created_after: datetime=None, since_id=None
     ) -> List[dict]:
-        """Pull the given user's statuses. Returns an empty list if not found.
+        """Pull the given user's statuses.
+
+            Returns a list of statuses (in ascending order), or an empty list if not found.
 
             Params: created_after : currently needs to be a timezone-aware datetime object
         """
 
         params = {}
-        id = self.lookup(username)["id"]
+        user_id = self.lookup(username)["id"]
+        page_counter=1
         while True:
             try:
-                url = f"/v1/accounts/{id}/statuses"
+                url = f"/v1/accounts/{user_id}/statuses"
                 if not replies:
                     url += "?exclude_replies=true"
                 result = self._get(url, params=params)
+                page_counter+=1
             except json.JSONDecodeError as e:
-                logger.error(f"Unable to pull user #{id}'s statuses': {e}")
+                logger.error(f"Unable to pull user #{user_id}'s statuses': {e}")
                 break
             except Exception as e:
-                logger.error(f"Misc. error while pulling statuses for {id}: {e}")
+                logger.error(f"Misc. error while pulling statuses for {user_id}: {e}")
                 break
 
             if "error" in result:
                 logger.error(
-                    f"API returned an error while pulling user #{id}'s statuses: {result}"
+                    f"API returned an error while pulling user #{user_id}'s statuses: {result}"
                 )
                 break
 
@@ -276,21 +289,24 @@ class Api:
             if not isinstance(result, list):
                 logger.error(f"Result is not a list (it's a {type(result)}): {result}")
 
-            posts = sorted(result, key=lambda k: k["id"])
-            params["max_id"] = posts[0]["id"]
+            posts = sorted(result, key=lambda k: k["id"], reverse=True) # latest first, earliest last
+            params["max_id"] = posts[-1]["id"] # max for next pull is the earliest
 
-            most_recent_date = date_parse.parse(posts[-1]["created_at"]).replace(microsecond=0, tzinfo=timezone.utc)
-            if created_after and most_recent_date <= created_after:
-                # Current and all future batches are too old
-                break
-
+            #print("----------")
+            #print("PAGE:", page_counter, "...")
             for post in posts:
                 post["_pulled"] = datetime.now().isoformat()
-                date_created = date_parse.parse(post["created_at"]).replace(microsecond=0, tzinfo=timezone.utc)
-                if created_after and date_created < created_after:
-                    continue
+
+                #print(post["created_at"])
+                post_at = date_parse.parse(post["created_at"]).replace(tzinfo=timezone.utc)
+                if created_after and post_at >= created_after:
+                    break
 
                 yield post
+
+
+
+
 
     def get_auth_id(self, username: str, password: str) -> str:
         """Logs in to Truth account and returns the session token"""

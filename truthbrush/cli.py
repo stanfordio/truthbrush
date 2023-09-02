@@ -4,16 +4,10 @@ import json
 import os
 import click
 from datetime import date
-from dotenv import load_dotenv
 
 from .api import Api
 
-load_dotenv()  # take environment variables from .env.
-api = Api(
-    os.getenv("TRUTHSOCIAL_USERNAME"),
-    os.getenv("TRUTHSOCIAL_PASSWORD"),
-    os.getenv("TRUTHSOCIAL_TOKEN"),
-)
+api = Api()
 
 
 @click.group()
