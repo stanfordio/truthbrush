@@ -4,6 +4,7 @@ import json
 import os
 import click
 from datetime import date
+import datetime
 
 from .api import Api
 
@@ -111,10 +112,17 @@ def ads():
 @click.option(
     "--created-after",
     default=None,
-    help="Only pull posts created on or after the specified date, e.g. 2021-10-02 (defaults to none).",
-    type=date.fromisoformat,
+    help="Only pull posts created on or after the specified datetime, e.g. 2021-10-02 or 2011-11-04T00:05:23+04:00 (defaults to none). If a timezone is not specified, UTC is assumed.",
+    type=datetime.datetime.fromisoformat,
 )
 def statuses(username: str, replies: bool = False, created_after: date = None):
     """Pull a user's statuses"""
-    for page in api.pull_statuses(username, created_after, replies):
+
+    # Assume UTC if no timezone is specified
+    if created_after and created_after.tzinfo is None:
+        created_after = created_after.replace(tzinfo=datetime.timezone.utc)
+
+    for page in api.pull_statuses(
+        username, created_after=created_after, replies=replies
+    ):
         print(json.dumps(page))
