@@ -23,6 +23,8 @@ After installation, you will need to set your Truth Social username and password
 
 `export TRUTHSOCIAL_PASSWORD=bar`
 
+You may also set these variables in a `.env` file in the directory from which you are running Truthbrush.
+
 ## CLI Usage
 
 ```text
@@ -80,7 +82,21 @@ truthbrush user HANDLE
 
 Contributions are encouraged! For small bug fixes and minor improvements, feel free to just open a PR. For larger changes, please open an issue first so that other contributors can discuss your plan, avoid duplicated work, and ensure it aligns with the goals of the project. Be sure to also follow the [code of conduct](CODE_OF_CONDUCT.md). Thanks!
 
-Development setup:
+Development setup (ensure you have [Poetry](https://python-poetry.org/) installed):
+
+```sh
+poetry install
+poetry shell
+truthbrush --help # will use your local copy of truthbrush
+```
+
+To run the tests:
+
+```sh
+pytest
+```
+
+If you prefer not to install Poetry in your root environment, you can also use Conda:
 
 ```sh
 conda create -n truthbrush-env python=3.9
@@ -90,12 +106,11 @@ conda install -c conda-forge poetry
 poetry install
 ```
 
-Running tests:
-
+Please format your code with `black`:
+  
 ```sh
-pytest
+black .
 ```
-
 
 ## Wishlist
 
