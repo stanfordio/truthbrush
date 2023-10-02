@@ -7,6 +7,9 @@ from curl_cffi import requests
 import json
 import logging
 import os
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env.
 
 logging.basicConfig(
     level=(
@@ -26,13 +29,22 @@ CLIENT_SECRET = "ozF8jzI4968oTKFkEnsBC-UbLPCdrSv0MkXGQu2o_-M"
 
 proxies = {"http": os.getenv("http_proxy"), "https": os.getenv("https_proxy")}
 
+TRUTHSOCIAL_USERNAME = os.getenv("TRUTHSOCIAL_USERNAME")
+TRUTHSOCIAL_PASSWORD = os.getenv("TRUTHSOCIAL_PASSWORD")
+TRUTHSOCIAL_TOKEN = os.getenv("TRUTHSOCIAL_TOKEN")
+
 
 class LoginErrorException(Exception):
     pass
 
 
 class Api:
-    def __init__(self, username: str = None, password: str = None, token: str = None):
+    def __init__(
+        self,
+        username=TRUTHSOCIAL_USERNAME,
+        password=TRUTHSOCIAL_PASSWORD,
+        token=TRUTHSOCIAL_TOKEN,
+    ):
         self.ratelimit_max = 300
         self.ratelimit_remaining = None
         self.ratelimit_reset = None
@@ -242,28 +254,47 @@ class Api:
                     return
 
     def pull_statuses(
-        self, username: str, created_after: date, replies: bool
+        self,
+        username: str,
+        replies=False,
+        verbose=False,
+        created_after: datetime = None,
+        since_id=None,
     ) -> List[dict]:
-        """Pull the given user's statuses. Returns an empty list if not found."""
+        """Pull the given user's statuses.
+
+        Params:
+            created_after : timezone aware datetime object
+            since_id : number or string
+
+        Returns a list of posts in reverse chronological order,
+            or an empty list if not found.
+        """
 
         params = {}
-        id = self.lookup(username)["id"]
-        while True:
+        user_id = self.lookup(username)["id"]
+        page_counter = 0
+        keep_going = True
+        while keep_going:
             try:
-                url = f"/v1/accounts/{id}/statuses"
+                url = f"/v1/accounts/{user_id}/statuses"
                 if not replies:
                     url += "?exclude_replies=true"
+                if verbose:
+                    logger.debug("--------------------------")
+                    logger.debug(f"{url} {params}")
                 result = self._get(url, params=params)
+                page_counter += 1
             except json.JSONDecodeError as e:
-                logger.error(f"Unable to pull user #{id}'s statuses': {e}")
+                logger.error(f"Unable to pull user #{user_id}'s statuses': {e}")
                 break
             except Exception as e:
-                logger.error(f"Misc. error while pulling statuses for {id}: {e}")
+                logger.error(f"Misc. error while pulling statuses for {user_id}: {e}")
                 break
 
             if "error" in result:
                 logger.error(
-                    f"API returned an error while pulling user #{id}'s statuses: {result}"
+                    f"API returned an error while pulling user #{user_id}'s statuses: {result}"
                 )
                 break
 
@@ -273,27 +304,33 @@ class Api:
             if not isinstance(result, list):
                 logger.error(f"Result is not a list (it's a {type(result)}): {result}")
 
-            posts = sorted(result, key=lambda k: k["id"])
-            params["max_id"] = posts[0]["id"]
+            posts = sorted(
+                result, key=lambda k: k["id"], reverse=True
+            )  # reverse chronological order (recent first, older last)
+            params["max_id"] = posts[-1][
+                "id"
+            ]  # when pulling the next page, get posts before this (the oldest)
 
-            most_recent_date = (
-                date_parse.parse(posts[-1]["created_at"])
-                .replace(tzinfo=timezone.utc)
-                .date()
-            )
-            if created_after and most_recent_date < created_after:
-                # Current and all future batches are too old
-                break
+            if verbose:
+                logger.debug(f"PAGE: {page_counter}")
 
             for post in posts:
                 post["_pulled"] = datetime.now().isoformat()
-                date_created = (
-                    date_parse.parse(post["created_at"])
-                    .replace(tzinfo=timezone.utc)
-                    .date()
+
+                # only keep posts created after the specified date
+                # exclude posts created before the specified date
+                # since the page is listed in reverse chronology, we don't need any remaining posts on this page either
+                post_at = date_parse.parse(post["created_at"]).replace(
+                    tzinfo=timezone.utc
                 )
-                if created_after and date_created < created_after:
-                    continue
+                if (created_after and post_at <= created_after) or (
+                    since_id and post["id"] <= since_id
+                ):
+                    keep_going = False  # stop the loop, request no more pages
+                    break  # do not yeild this post or remaining (older) posts on this page
+
+                if verbose:
+                    logger.debug(f"{post['id']} {post['created_at']}")
 
                 yield post
 
