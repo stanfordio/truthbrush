@@ -90,11 +90,6 @@ poetry shell
 truthbrush --help # will use your local copy of truthbrush
 ```
 
-To run the tests:
-
-```sh
-pytest
-```
 
 If you prefer not to install Poetry in your root environment, you can also use Conda:
 
@@ -106,8 +101,17 @@ conda install -c conda-forge poetry
 poetry install
 ```
 
+To run the tests:
+
+```sh
+pytest
+
+# optionally run tests with verbose logging outputs:
+pytest --log-cli-level=DEBUG -s
+```
+
 Please format your code with `black`:
-  
+
 ```sh
 black .
 ```

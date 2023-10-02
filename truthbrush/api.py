@@ -281,8 +281,8 @@ class Api:
                 if not replies:
                     url += "?exclude_replies=true"
                 if verbose:
-                    print("--------------------------")
-                    print(url, params)
+                    logger.debug("--------------------------")
+                    logger.debug(f"{url} {params}")
                 result = self._get(url, params=params)
                 page_counter += 1
             except json.JSONDecodeError as e:
@@ -312,7 +312,7 @@ class Api:
             ]  # when pulling the next page, get posts before this (the oldest)
 
             if verbose:
-                print("PAGE", page_counter)
+                logger.debug(f"PAGE: {page_counter}")
 
             for post in posts:
                 post["_pulled"] = datetime.now().isoformat()
@@ -330,7 +330,7 @@ class Api:
                     break  # do not yeild this post or remaining (older) posts on this page
 
                 if verbose:
-                    print(post["id"], post["created_at"])
+                    logger.debug(f"{post['id']} {post['created_at']}")
 
                 yield post
 
