@@ -4,6 +4,7 @@ version = "0.1.6"
 description = "API client for Truth Social"
 authors = ["R. Miles McCain <github@sendmiles.email>"]
 license = "Apache 2.0"
+readme = "README.md"
 
 [tool.poetry.scripts]
 truthbrush = "truthbrush.cli:cli"
