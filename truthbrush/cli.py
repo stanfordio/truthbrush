@@ -115,7 +115,12 @@ def ads():
     help="Only pull posts created on or after the specified datetime, e.g. 2021-10-02 or 2011-11-04T00:05:23+04:00 (defaults to none). If a timezone is not specified, UTC is assumed.",
     type=datetime.datetime.fromisoformat,
 )
-def statuses(username: str, replies: bool = False, created_after: date = None):
+@click.option(
+    "--pinned/--all",
+    default=False,
+    help="Only pull pinned posts (defaults to all)"
+)
+def statuses(username: str, replies: bool = False, created_after: date = None, pinned: bool = False):
     """Pull a user's statuses"""
 
     # Assume UTC if no timezone is specified
@@ -123,6 +128,6 @@ def statuses(username: str, replies: bool = False, created_after: date = None):
         created_after = created_after.replace(tzinfo=datetime.timezone.utc)
 
     for page in api.pull_statuses(
-        username, created_after=created_after, replies=replies
+        username, created_after=created_after, replies=replies, pinned=pinned
     ):
         print(json.dumps(page))

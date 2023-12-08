@@ -267,7 +267,6 @@ class Api:
         Params:
             created_after : timezone aware datetime object
             since_id : number or string
-            pinned : get pinned posts only
 
         Returns a list of posts in reverse chronological order,
             or an empty list if not found.
