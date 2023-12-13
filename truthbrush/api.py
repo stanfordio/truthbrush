@@ -260,6 +260,7 @@ class Api:
         verbose=False,
         created_after: datetime = None,
         since_id=None,
+        pinned=False,
     ) -> List[dict]:
         """Pull the given user's statuses.
 
@@ -278,7 +279,9 @@ class Api:
         while keep_going:
             try:
                 url = f"/v1/accounts/{user_id}/statuses"
-                if not replies:
+                if pinned:
+                    url += "?pinned=true&with_muted=true"
+                elif not replies:
                     url += "?exclude_replies=true"
                 if verbose:
                     logger.debug("--------------------------")
@@ -313,6 +316,9 @@ class Api:
 
             if verbose:
                 logger.debug(f"PAGE: {page_counter}")
+
+            if pinned:  # assume single page
+                keep_going = False
 
             for post in posts:
                 post["_pulled"] = datetime.now().isoformat()
