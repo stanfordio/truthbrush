@@ -191,11 +191,12 @@ class Api:
 
             yield resp
 
-    def trending(self):
-        """Return trending truths."""
+    def trending(self, limit=10):
+        """Return trending truths.  
+            Optional arg limit<20 specifies number to return."""
 
         self.__check_login()
-        return self._get("/v1/truth/trending/truths")
+        return self._get(f"/v1/truth/trending/truths?limit={limit}")
 
     def tags(self):
         """Return trending tags."""
