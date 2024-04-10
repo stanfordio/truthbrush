@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "truthbrush"
-version = "0.1.6"
+version = "0.1.7"
 description = "API client for Truth Social"
 authors = ["R. Miles McCain <github@sendmiles.email>"]
 license = "Apache 2.0"
@@ -11,11 +11,11 @@ truthbrush = "truthbrush.cli:cli"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-click = "^8.0.4"
-loguru = "^0.6.0"
-python-dotenv = "^0.19.2"
-python-dateutil = "^2.8.2"
-curl_cffi = "^0.5.2"
+click = "^8.1.0"
+loguru = "^0.7.0"
+python-dotenv = "^1.0.1"
+python-dateutil = "2.9.0"
+curl_cffi = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 black = "^24.3.0"
