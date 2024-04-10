@@ -92,7 +92,7 @@ class Api:
             API_BASE_URL + url,
             params=params,
             proxies=proxies,
-            impersonate="chrome110",
+            impersonate="chrome120",
             headers={
                 "Authorization": "Bearer " + self.auth_id,
                 "User-Agent": USER_AGENT,
@@ -102,7 +102,13 @@ class Api:
         # Will also sleep
         self._check_ratelimit(resp)
 
-        return resp.json()
+        try:
+            r = resp.json()
+        except json.JSONDecodeError:
+            logger.error(f"Failed to decode JSON: {resp.text}")
+            r = None
+
+        return r
 
     def _get_paginated(self, url: str, params: dict = None, resume: str = None) -> Any:
         next_link = API_BASE_URL + url
