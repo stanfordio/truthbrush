@@ -21,7 +21,7 @@ logging.basicConfig(
 
 BASE_URL = "https://truthsocial.com"
 API_BASE_URL = "https://truthsocial.com/api"
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
 
 # Oauth client credentials, from https://truthsocial.com/packs/js/application-d77ef3e9148ad1d0624c.js
 CLIENT_ID = "9X1Fdd-pxNsAgEDNi_SfhJWi8T-vLuV2WVzKIbkTCw4"
@@ -121,7 +121,7 @@ class Api:
                 next_link,
                 params=params,
                 proxies=proxies,
-                impersonate="chrome110",
+                impersonate="chrome120",
                 headers={
                     "Authorization": "Bearer " + self.auth_id,
                     "User-Agent": USER_AGENT,
@@ -365,7 +365,7 @@ class Api:
                 url,
                 json=payload,
                 proxies=proxies,
-                impersonate="chrome110",
+                impersonate="chrome120",
                 headers={
                     "User-Agent": USER_AGENT,
                 },
