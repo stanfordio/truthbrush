@@ -146,8 +146,17 @@ class Api:
         # https://docs.joinmastodon.org/methods/statuses/#favourited_by
         self.__check_login()
         post_id = post.split('/')[-1]
-        return self._get(
-            f"/api/v1/statuses/:{post_id}/favourited_by", params=dict(limit=top_num))
+        n_output = 0
+        for followers_batch in self._get_paginated(
+            f"/api/v1/statuses/:{post_id}/favourited_by", resume=None, params=dict(limit=top_num)
+        ):
+            for f in followers_batch:
+                yield f
+                n_output += 1
+                if n_output >= top_num:
+                    return
+        # return self._get(
+        #     f"/api/v1/statuses/:{post_id}/favourited_by", params=dict(limit=top_num))
 
     def lookup(self, user_handle: str = None) -> Optional[dict]:
         """Lookup a user's information."""
