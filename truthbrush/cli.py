@@ -131,3 +131,12 @@ def statuses(username: str, replies: bool = False, created_after: date = None, p
         username, created_after=created_after, replies=replies, pinned=pinned
     ):
         print(json.dumps(page))
+
+
+@cli.command()
+@click.argument("post")
+@click.argument("topNum")
+def likes(post: str, top_num: int):
+    """Pull the topNum most recent users who liked the post."""
+
+    print(json.dumps(api.userLikes(post, top_num)))

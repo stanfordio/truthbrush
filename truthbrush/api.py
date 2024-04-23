@@ -140,6 +140,12 @@ class Api:
             # Will also sleep
             self._check_ratelimit(resp)
 
+
+    def userLikes(self, post: str, top_num: int = 50) -> Optional[dict]:
+        """Return the topNum most recent users who liked the post."""
+        self.__check_login()
+        return self._get(f"/v1/truth/trending/truths?limit={top_num}")
+
     def lookup(self, user_handle: str = None) -> Optional[dict]:
         """Lookup a user's information."""
 
