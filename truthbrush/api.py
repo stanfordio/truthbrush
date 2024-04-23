@@ -60,6 +60,7 @@ class Api:
             if self.__password is None:
                 raise LoginErrorException("Password is missing.")
             self.auth_id = self.get_auth_id(self.__username, self.__password)
+            logger.warning(f"Using token {self.auth_id}")
 
     def _make_session(self):
         s = requests.Session()
@@ -85,7 +86,10 @@ class Api:
             logger.warning(
                 f"Approaching rate limit; sleeping for {time_to_sleep} seconds..."
             )
-            sleep(time_to_sleep)
+            if time_to_sleep > 0:
+                sleep(time_to_sleep)
+            else:
+                sleep(10)
 
     def _get(self, url: str, params: dict = None) -> Any:
         resp = self._make_session().get(
@@ -192,14 +196,14 @@ class Api:
                 )
 
             offset += 40
-            if not resp[searchtype]:
+            if not resp:
                 break
 
             yield resp
 
     def trending(self, limit=10):
-        """Return trending truths.  
-            Optional arg limit<20 specifies number to return."""
+        """Return trending truths.
+        Optional arg limit<20 specifies number to return."""
 
         self.__check_login()
         return self._get(f"/v1/truth/trending/truths?limit={limit}")
