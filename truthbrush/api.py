@@ -140,11 +140,14 @@ class Api:
             # Will also sleep
             self._check_ratelimit(resp)
 
-
-    def userLikes(self, post: str, top_num: int = 50) -> Optional[dict]:
+    def userLikes(self, post: str, top_num: int = 40) -> Optional[dict]:
         """Return the topNum most recent users who liked the post."""
+        # check what happens if post doesn't exist or if top_num < 40 || > 80
+        # https://docs.joinmastodon.org/methods/statuses/#favourited_by
         self.__check_login()
-        return self._get(f"/v1/truth/trending/truths?limit={top_num}")
+        post_id = post.split('/')[-1]
+        return self._get(
+            f"/api/v1/statuses/:{post_id}/favourited_by", params=dict(limit=top_num))
 
     def lookup(self, user_handle: str = None) -> Optional[dict]:
         """Lookup a user's information."""
