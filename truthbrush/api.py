@@ -140,25 +140,23 @@ class Api:
             # Will also sleep
             self._check_ratelimit(resp)
 
-    def userLikes(self, post: str, top_num: int = 40) -> Optional[dict]:
-        """Return the top_num most recent users who liked the post."""
-        # check what happens if post doesn't exist or if top_num < 40 || > 80
+    def userLikes(self, post: str, top_num: int = 40) -> bool | Any:
+        """Return the top_num most recent users who liked the post. Returns up to 80 users or nothing if top_num is out of range."""
         # https://docs.joinmastodon.org/methods/statuses/#favourited_by
         self.__check_login()
+        top_num = min(int(top_num), 80)
+        if top_num < 1:
+            return
         post = post.split('/')[-1]
-        # n_output = 0
-        # for followers_batch in self._get_paginated(
-        #     f"/v1/statuses/{post}/favourited_by", resume=None, params=dict(limit=top_num)
-        # ):
-        #     for f in followers_batch:
-        #         print(f)
-        #         yield f
-        #         n_output += 1
-        #         if n_output >= top_num:
-        #             return
-        return_value = self._get(f"/v1/statuses/{post}/favourited_by?limit={top_num}")
-        print("return value is ", return_value)
-        return return_value
+        n_output = 0
+        for followers_batch in self._get_paginated(
+            f"/v1/statuses/{post}/favourited_by", resume=None, params=dict(limit=top_num)
+        ):
+            for f in followers_batch:
+                yield f
+                n_output += 1
+                if n_output >= top_num:
+                    return
 
     def lookup(self, user_handle: str = None) -> Optional[dict]:
         """Lookup a user's information."""
