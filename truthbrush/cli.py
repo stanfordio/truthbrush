@@ -135,8 +135,11 @@ def statuses(username: str, replies: bool = False, created_after: date = None, p
 
 @cli.command()
 @click.argument("post")
-@click.argument("topNum")
+@click.argument("top_num")
 def likes(post: str, top_num: int):
-    """Pull the topNum most recent users who liked the post."""
-
+    """Pull the top_num most recent users who liked the post."""
     print(json.dumps(api.userLikes(post, top_num)))
+    # for page in api.userLikes(post, top_num):
+    #     print(f"PAGE: {page}")
+    #     print(json.dumps(page))
+
