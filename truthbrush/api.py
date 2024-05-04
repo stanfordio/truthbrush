@@ -141,16 +141,15 @@ class Api:
             self._check_ratelimit(resp)
 
     def userLikes(self, post: str, top_num: int = 40) -> bool | Any:
-        """Return the top_num most recent users who liked the post. Returns up to 80 users or nothing if top_num is out of range."""
-        # https://docs.joinmastodon.org/methods/statuses/#favourited_by
+        """Return the top_num most recent users who liked the post."""
         self.__check_login()
-        top_num = min(int(top_num), 80)
+        top_num = int(top_num)
         if top_num < 1:
             return
-        post = post.split('/')[-1]
+        post = post.split("/")[-1]
         n_output = 0
         for followers_batch in self._get_paginated(
-            f"/v1/statuses/{post}/favourited_by", resume=None, params=dict(limit=top_num)
+            f"/v1/statuses/{post}/favourited_by", resume=None, params=dict(limit=80)
         ):
             for f in followers_batch:
                 yield f
@@ -216,8 +215,8 @@ class Api:
             yield resp
 
     def trending(self, limit=10):
-        """Return trending truths.  
-            Optional arg limit<20 specifies number to return."""
+        """Return trending truths.
+        Optional arg limit<20 specifies number to return."""
 
         self.__check_login()
         return self._get(f"/v1/truth/trending/truths?limit={limit}")
