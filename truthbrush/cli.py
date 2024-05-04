@@ -116,11 +116,14 @@ def ads():
     type=datetime.datetime.fromisoformat,
 )
 @click.option(
-    "--pinned/--all",
-    default=False,
-    help="Only pull pinned posts (defaults to all)"
+    "--pinned/--all", default=False, help="Only pull pinned posts (defaults to all)"
 )
-def statuses(username: str, replies: bool = False, created_after: date = None, pinned: bool = False):
+def statuses(
+    username: str,
+    replies: bool = False,
+    created_after: date = None,
+    pinned: bool = False,
+):
     """Pull a user's statuses"""
 
     # Assume UTC if no timezone is specified
@@ -130,4 +133,13 @@ def statuses(username: str, replies: bool = False, created_after: date = None, p
     for page in api.pull_statuses(
         username, created_after=created_after, replies=replies, pinned=pinned
     ):
+        print(json.dumps(page))
+
+
+@cli.command()
+@click.argument("post")
+@click.argument("top_num")
+def likes(post: str, top_num: int):
+    """Pull the top_num most recent users who liked the post."""
+    for page in api.userLikes(post, top_num):
         print(json.dumps(page))

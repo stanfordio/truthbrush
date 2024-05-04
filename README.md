@@ -42,6 +42,7 @@ Commands:
   trends       Pull trendy Truths.
   ads          Pull ads.
   user         Pull a user's metadata.
+  likes        Pull the list of users who liked a post
 ``````
 
 **Search for users, statuses, or hashtags**
@@ -76,6 +77,12 @@ truthbrush ads
 
 ```bash
 truthbrush user HANDLE
+```
+
+**Pull the list of users who liked a post**
+
+```bash
+truthbrush likes POST TOP_NUM
 ```
 
 ## Contributing

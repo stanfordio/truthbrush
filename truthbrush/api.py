@@ -144,6 +144,23 @@ class Api:
             # Will also sleep
             self._check_ratelimit(resp)
 
+    def userLikes(self, post: str, top_num: int = 40) -> bool | Any:
+        """Return the top_num most recent users who liked the post."""
+        self.__check_login()
+        top_num = int(top_num)
+        if top_num < 1:
+            return
+        post = post.split("/")[-1]
+        n_output = 0
+        for followers_batch in self._get_paginated(
+            f"/v1/statuses/{post}/favourited_by", resume=None, params=dict(limit=80)
+        ):
+            for f in followers_batch:
+                yield f
+                n_output += 1
+                if n_output >= top_num:
+                    return
+
     def lookup(self, user_handle: str = None) -> Optional[dict]:
         """Lookup a user's information."""
 
