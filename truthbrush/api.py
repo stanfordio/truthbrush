@@ -235,6 +235,24 @@ class Api:
         """Return a list of suggested users to follow."""
         self.__check_login()
         return self._get(f"/v2/suggestions?limit={maximum}")
+    
+    def trending_groups(self, limit=10):
+        """Return trending group truths.
+        Optional arg limit<20 specifies number to return."""
+
+        self.__check_login()
+        return self._get(f"/v1/truth/trends/groups?limit={limit}")
+
+    def group_tags(self):
+        """Return trending group tags."""
+
+        self.__check_login()
+        return self._get("/v1/groups/tags")
+
+    def suggested_groups(self, maximum: int = 50) -> dict:
+        """Return a list of suggested groups to follow."""
+        self.__check_login()
+        return self._get(f"/v1/truth/suggestions/groups?limit={maximum}")
 
     def ads(self, device: str = "desktop") -> dict:
         """Return a list of ads from Rumble's Ad Platform via Truth Social API."""
