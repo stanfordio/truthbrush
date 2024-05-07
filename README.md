@@ -9,9 +9,11 @@ Currently, this tool can:
 * Pull "trending" hashtags
 * Pull "trending" Truth posts
 * Pull ads
-* Pull a user's metadata
+* Pull a user's metadata 
+* Pull the list of users who liked a post 
+* Pull the list of comments on a post
 
-Truthbrush is designed for academic research, open source intelligence gathering, and data archival. It pulls all of the data from the publicly accessible API.
+Truthbrush is designed for academic research, open source intelligence gathering, and data archival. It pulls all data from the publicly accessible API.
 
 ## Installation
 
@@ -43,6 +45,7 @@ Commands:
   ads          Pull ads.
   user         Pull a user's metadata.
   likes        Pull the list of users who liked a post
+  comments     Pull the list of oldest comments on a post
 ``````
 
 **Search for users, statuses, or hashtags**
@@ -82,7 +85,13 @@ truthbrush user HANDLE
 **Pull the list of users who liked a post**
 
 ```bash
-truthbrush likes POST TOP_NUM
+truthbrush likes POST --INCLUDEALL TOP_NUM
+```
+
+**Pull the list of oldest comments on a post**
+
+```bash
+truthbrush comments POST --INCLUDEALL TOP_NUM
 ```
 
 ## Contributing

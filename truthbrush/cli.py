@@ -138,8 +138,20 @@ def statuses(
 
 @cli.command()
 @click.argument("post")
+@click.option("--includeall", is_flag=True, help="return all comments on post.")
 @click.argument("top_num")
-def likes(post: str, top_num: int):
+def likes(post: str, includeall: bool, top_num: int):
     """Pull the top_num most recent users who liked the post."""
-    for page in api.userLikes(post, top_num):
+    for page in api.userLikes(post, includeall, top_num):
         print(json.dumps(page))
+
+
+@cli.command()
+@click.argument("post")
+@click.option("--includeall", is_flag=True, help="return all comments on post.")
+@click.argument("top_num")
+def comments(post: str, includeall: bool, top_num: int = 40):
+    """Pull the top_num comments on a post (defaults to all users, including replies)."""
+    for page in api.pull_comments(post, includeall, top_num):
+        print(page)
+        # print(json.dumps(page))

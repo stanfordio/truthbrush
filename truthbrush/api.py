@@ -140,8 +140,10 @@ class Api:
             # Will also sleep
             self._check_ratelimit(resp)
 
-    def userLikes(self, post: str, top_num: int = 40) -> bool | Any:
-        """Return the top_num most recent users who liked the post."""
+    def userLikes(
+        self, post: str, includeAll: bool = False, top_num: int = 40
+    ) -> bool | Any:
+        """Return the top_num most recent (or all) users who liked the post."""
         self.__check_login()
         top_num = int(top_num)
         if top_num < 1:
@@ -154,7 +156,26 @@ class Api:
             for f in followers_batch:
                 yield f
                 n_output += 1
-                if n_output >= top_num:
+                if not includeAll and n_output >= top_num:
+                    return
+
+    def pull_comments(self, post: str, includeAll: bool = False, top_num: int = 40):
+        """Return the top_num oldest (or all) replies to a post. Includes replies to replies."""
+        self.__check_login()
+        top_num = int(top_num)
+        if top_num < 1:
+            return
+        post = post.split("/")[-1]
+        n_output = 0
+        for followers_batch in self._get_paginated(
+            f"/v1/statuses/{post}/context/descendants?sort=newest",
+            resume=None,
+            params=dict(limit=80),
+        ):
+            for f in followers_batch:
+                yield f
+                n_output += 1
+                if not includeAll and n_output >= top_num:
                     return
 
     def lookup(self, user_handle: str = None) -> Optional[dict]:
