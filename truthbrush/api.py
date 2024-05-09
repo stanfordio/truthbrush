@@ -235,7 +235,7 @@ class Api:
         """Return a list of suggested users to follow."""
         self.__check_login()
         return self._get(f"/v2/suggestions?limit={maximum}")
-    
+
     def trending_groups(self, limit=10):
         """Return trending group truths.
         Optional arg limit<20 specifies number to return."""
