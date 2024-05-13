@@ -3,13 +3,16 @@ Truthbrush is an API client for Truth Social. Truthbrush is built and maintained
 
 Currently, this tool can:
 
-* Search for users, statuses, or hashtags
+* Search for users, statuses, groups, or hashtags
 * Pull a user's statuses
 * Pull the list of "People to Follow" or suggested users
 * Pull "trending" hashtags
 * Pull "trending" Truth posts
 * Pull ads
 * Pull a user's metadata
+* Pull "trending" groups 
+* Pull list of suggested groups 
+* Pull "trending" group hashtags
 
 Truthbrush is designed for academic research, open source intelligence gathering, and data archival. It pulls all of the data from the publicly accessible API.
 
@@ -35,20 +38,23 @@ Options:
 
 
 Commands:
-  search       Search for users, statuses or hashtags.
-  statuses     Pull a user's statuses.
-  suggestions  Pull the list of suggested users.
-  tags         Pull trendy tags.
-  trends       Pull trendy Truths.
-  ads          Pull ads.
-  user         Pull a user's metadata.
-  likes        Pull the list of users who liked a post
+  search             Search for users, statuses, groups, or hashtags.
+  statuses           Pull a user's statuses.
+  suggestions        Pull the list of suggested users.
+  tags               Pull trendy tags.
+  trends             Pull trendy Truths.
+  ads                Pull ads.
+  user               Pull a user's metadata.
+  likes              Pull the list of users who liked a post
+  group-tags         Pull trending group tags. 
+  group-trends       Pull trending groups.
+  group-suggestions  Pull list of suggested groups.
 ``````
 
-**Search for users, statuses, or hashtags**
+**Search for users, statuses, groups, or hashtags**
 
 ```bash
-truthbrush search --searchtype [accounts|statuses|hashtags] QUERY
+truthbrush search --searchtype [accounts|statuses|hashtags|groups] QUERY
 ```
 
 **Pull all statuses (posts) from a user**
@@ -83,6 +89,24 @@ truthbrush user HANDLE
 
 ```bash
 truthbrush likes POST TOP_NUM
+```
+
+**Pull trending group tags**
+
+```bash
+truthbrush group-tags
+```
+
+**Pull trending groups**
+
+```bash 
+truthbrush group-trends      
+``` 
+
+**Pull list of suggested groups**
+
+```bash 
+truthbrush group-suggestions
 ```
 
 ## Contributing

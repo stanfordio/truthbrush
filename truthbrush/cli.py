@@ -59,15 +59,15 @@ def user(handle: str):
 @click.argument("query")
 @click.option(
     "--searchtype",
-    help="Type of search query (accounts, statuses, or hashtags)",
-    type=click.Choice(["accounts", "statuses", "hashtags"]),
+    help="Type of search query (accounts, statuses, groups, or hashtags)",
+    type=click.Choice(["accounts", "statuses", "hashtags", "groups"]),
 )
 @click.option(
     "--limit", default=40, help="Limit the number of items returned", type=int
 )
 @click.option("--resolve", help="Resolve", type=bool)
 def search(searchtype: str, query: str, limit: int, resolve: bool):
-    """Search for users, statuses or hashtags."""
+    """Search for users, statuses, groups, or hashtags."""
 
     for page in api.search(searchtype, query, limit, resolve):
         print(json.dumps(page[searchtype]))
