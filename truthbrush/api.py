@@ -213,7 +213,8 @@ class Api:
                 )
 
             offset += 40
-            if not resp:
+            # added new not sure if helpful 
+            if not resp or all(value == [] for value in resp.values()):
                 break
 
             yield resp
