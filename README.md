@@ -13,6 +13,7 @@ Currently, this tool can:
 * Pull "trending" groups 
 * Pull list of suggested groups 
 * Pull "trending" group hashtags
+* Pull posts from group timeline
 
 Truthbrush is designed for academic research, open source intelligence gathering, and data archival. It pulls all of the data from the publicly accessible API.
 
@@ -46,9 +47,10 @@ Commands:
   ads                Pull ads.
   user               Pull a user's metadata.
   likes              Pull the list of users who liked a post
-  group-tags         Pull trending group tags. 
-  group-trends       Pull trending groups.
-  group-suggestions  Pull list of suggested groups.
+  groupposts         Pull posts from a groups's timeline
+  grouptags         Pull trending group tags. 
+  grouptrends       Pull trending groups.
+  groupsuggestions  Pull list of suggested groups.
 ``````
 
 **Search for users, statuses, groups, or hashtags**
@@ -94,19 +96,25 @@ truthbrush likes POST TOP_NUM
 **Pull trending group tags**
 
 ```bash
-truthbrush group-tags
+truthbrush grouptags
 ```
 
 **Pull trending groups**
 
 ```bash 
-truthbrush group-trends      
+truthbrush grouptrends      
 ``` 
 
 **Pull list of suggested groups**
 
 ```bash 
-truthbrush group-suggestions
+truthbrush groupsuggestions
+```
+
+**Pull posts from a group's timeline**
+
+```bash
+truthbrush groupposts GROUP_ID
 ```
 
 ## Contributing

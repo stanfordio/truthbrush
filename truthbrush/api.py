@@ -31,6 +31,7 @@ proxies = {"http": os.getenv("http_proxy"), "https": os.getenv("https_proxy")}
 
 TRUTHSOCIAL_USERNAME = os.getenv("TRUTHSOCIAL_USERNAME")
 TRUTHSOCIAL_PASSWORD = os.getenv("TRUTHSOCIAL_PASSWORD")
+
 TRUTHSOCIAL_TOKEN = os.getenv("TRUTHSOCIAL_TOKEN")
 
 
@@ -226,6 +227,21 @@ class Api:
         self.__check_login()
         return self._get(f"/v1/truth/trending/truths?limit={limit}")
 
+    # ----- TESTING -----
+    def group_posts(self, group_id: str, limit=20):
+        self.__check_login()
+        timeline = [] 
+        posts = self._get(f"/v1/timelines/group/{group_id}?limit={limit}")
+        while posts!=None:
+            timeline += posts
+            limit = limit - len(posts)
+            if limit <= 0:
+                break
+            max_id = posts[-1]["id"]
+            posts = self._get(f"/v1/timelines/group/{group_id}?max_id={max_id}&limit={limit}")
+        return timeline
+    # -------------------
+    
     def tags(self):
         """Return trending tags."""
 
