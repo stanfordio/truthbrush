@@ -21,7 +21,10 @@ logging.basicConfig(
 
 BASE_URL = "https://truthsocial.com"
 API_BASE_URL = "https://truthsocial.com/api"
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 "
+    "Safari/537.36"
+)
 
 # Oauth client credentials, from https://truthsocial.com/packs/js/application-d77ef3e9148ad1d0624c.js
 CLIENT_ID = "9X1Fdd-pxNsAgEDNi_SfhJWi8T-vLuV2WVzKIbkTCw4"
@@ -159,8 +162,14 @@ class Api:
                 if not includeAll and n_output >= top_num:
                     return
 
-    def pull_comments(self, post: str, includeAll: bool = False, top_num: int = 40):
-        """Return the top_num oldest (or all) replies to a post. Includes replies to replies."""
+    def pull_comments(
+        self,
+        post: str,
+        includeAll: bool = False,
+        onlyFirst: bool = False,
+        top_num: int = 40,
+    ):
+        """Return the top_num oldest (or all) replies to a post."""
         self.__check_login()
         top_num = int(top_num)
         if top_num < 1:
@@ -168,15 +177,17 @@ class Api:
         post = post.split("/")[-1]
         n_output = 0
         for followers_batch in self._get_paginated(
-            f"/v1/statuses/{post}/context/descendants?sort=newest",
+            f"/v1/statuses/{post}/context/descendants",
             resume=None,
-            params=dict(limit=80),
+            params=dict(read="statuses"),
         ):
+            # TO-DO: sort by sort=controversial, sort=newest, sort=oldest, sort=trending
             for f in followers_batch:
-                yield f
-                n_output += 1
-                if not includeAll and n_output >= top_num:
-                    return
+                if (onlyFirst and f["in_reply_to_id"] == post) or not onlyFirst:
+                    yield f
+                    n_output += 1
+                    if not includeAll and n_output >= top_num:
+                        return
 
     def lookup(self, user_handle: str = None) -> Optional[dict]:
         """Lookup a user's information."""

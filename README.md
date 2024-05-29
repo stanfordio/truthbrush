@@ -91,7 +91,7 @@ truthbrush likes POST --INCLUDEALL TOP_NUM
 **Pull the list of oldest comments on a post**
 
 ```bash
-truthbrush comments POST --INCLUDEALL TOP_NUM
+truthbrush comments POST --INCLUDEALL --ONLYFIRST TOP_NUM
 ```
 
 ## Contributing

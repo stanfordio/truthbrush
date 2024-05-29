@@ -5,7 +5,7 @@ import os
 import click
 from datetime import date
 import datetime
-
+import pdb
 from .api import Api
 
 api = Api()
@@ -148,10 +148,14 @@ def likes(post: str, includeall: bool, top_num: int):
 
 @cli.command()
 @click.argument("post")
-@click.option("--includeall", is_flag=True, help="return all comments on post.")
+@click.option(
+    "--includeall", is_flag=True, help="return all comments on post. Overrides top_num."
+)
+@click.option(
+    "--onlyfirst", is_flag=True, help="return only direct replies to specified post"
+)
 @click.argument("top_num")
-def comments(post: str, includeall: bool, top_num: int = 40):
+def comments(post: str, includeall: bool, onlyfirst: bool, top_num: int = 40):
     """Pull the top_num comments on a post (defaults to all users, including replies)."""
-    for page in api.pull_comments(post, includeall, top_num):
+    for page in api.pull_comments(post, includeall, onlyfirst, top_num):
         print(page)
-        # print(json.dumps(page))
