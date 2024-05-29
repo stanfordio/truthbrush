@@ -1,11 +1,9 @@
 """Defines the CLI for Truthbrush."""
 
 import json
-import os
 import click
 from datetime import date
 import datetime
-import pdb
 from .api import Api
 
 api = Api()

@@ -85,13 +85,13 @@ truthbrush user HANDLE
 **Pull the list of users who liked a post**
 
 ```bash
-truthbrush likes POST --INCLUDEALL TOP_NUM
+truthbrush likes POST --includeall TOP_NUM
 ```
 
 **Pull the list of oldest comments on a post**
 
 ```bash
-truthbrush comments POST --INCLUDEALL --ONLYFIRST TOP_NUM
+truthbrush comments POST --includeall --onlyfirst TOP_NUM
 ```
 
 ## Contributing

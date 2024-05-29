@@ -144,7 +144,7 @@ class Api:
             self._check_ratelimit(resp)
 
     def userLikes(
-        self, post: str, includeAll: bool = False, top_num: int = 40
+        self, post: str, include_all: bool = False, top_num: int = 40
     ) -> bool | Any:
         """Return the top_num most recent (or all) users who liked the post."""
         self.__check_login()
@@ -159,14 +159,14 @@ class Api:
             for f in followers_batch:
                 yield f
                 n_output += 1
-                if not includeAll and n_output >= top_num:
+                if not include_all and n_output >= top_num:
                     return
 
     def pull_comments(
         self,
         post: str,
-        includeAll: bool = False,
-        onlyFirst: bool = False,
+        include_all: bool = False,
+        only_first: bool = False,
         top_num: int = 40,
     ):
         """Return the top_num oldest (or all) replies to a post."""
@@ -179,14 +179,14 @@ class Api:
         for followers_batch in self._get_paginated(
             f"/v1/statuses/{post}/context/descendants",
             resume=None,
-            params=dict(read="statuses"),
+            params=dict(sort="oldest"),
         ):
             # TO-DO: sort by sort=controversial, sort=newest, sort=oldest, sort=trending
             for f in followers_batch:
-                if (onlyFirst and f["in_reply_to_id"] == post) or not onlyFirst:
+                if (only_first and f["in_reply_to_id"] == post) or not only_first:
                     yield f
                     n_output += 1
-                    if not includeAll and n_output >= top_num:
+                    if not include_all and n_output >= top_num:
                         return
 
     def lookup(self, user_handle: str = None) -> Optional[dict]:
