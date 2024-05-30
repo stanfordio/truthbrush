@@ -17,6 +17,17 @@ def cli():
 
 
 @cli.command()
+@click.argument("group_id")
+@click.option(
+    "--limit", default=20, help="Limit the number of items returned", type=int
+)
+def groupposts(group_id: str, limit: int):
+    """Pull posts from group timeline"""
+
+    print(json.dumps(api.group_posts(group_id, limit)))
+
+
+@cli.command()
 def trends():
     """Pull trendy Truths."""
 
