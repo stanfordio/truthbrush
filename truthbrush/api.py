@@ -214,7 +214,7 @@ class Api:
                 )
 
             offset += 40
-            # added new not sure if helpful 
+            # added new not sure if helpful
             if not resp or all(value == [] for value in resp.values()):
                 break
 
@@ -227,21 +227,21 @@ class Api:
         self.__check_login()
         return self._get(f"/v1/truth/trending/truths?limit={limit}")
 
-    # ----- TESTING -----
     def group_posts(self, group_id: str, limit=20):
         self.__check_login()
-        timeline = [] 
+        timeline = []
         posts = self._get(f"/v1/timelines/group/{group_id}?limit={limit}")
-        while posts!=None:
+        while posts != None:
             timeline += posts
             limit = limit - len(posts)
             if limit <= 0:
                 break
             max_id = posts[-1]["id"]
-            posts = self._get(f"/v1/timelines/group/{group_id}?max_id={max_id}&limit={limit}")
+            posts = self._get(
+                f"/v1/timelines/group/{group_id}?max_id={max_id}&limit={limit}"
+            )
         return timeline
-    # -------------------
-    
+
     def tags(self):
         """Return trending tags."""
 

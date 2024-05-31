@@ -40,11 +40,13 @@ def tags():
 
     print(json.dumps(api.tags()))
 
+
 @cli.command()
 def grouptags():
     """Pull group tags."""
 
     print(json.dumps(api.group_tags()))
+
 
 @cli.command()
 def grouptrends():
@@ -52,11 +54,13 @@ def grouptrends():
 
     print(json.dumps(api.trending_groups()))
 
+
 @cli.command()
 def groupsuggest():
     """Pull group suggestions."""
 
     print(json.dumps(api.suggested_groups()))
+
 
 @cli.command()
 @click.argument("handle")
