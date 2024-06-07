@@ -143,7 +143,7 @@ class Api:
             # Will also sleep
             self._check_ratelimit(resp)
 
-    def userLikes(
+    def user_likes(
         self, post: str, include_all: bool = False, top_num: int = 40
     ) -> bool | Any:
         """Return the top_num most recent (or all) users who liked the post."""
