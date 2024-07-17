@@ -1,0 +1,56 @@
+project:
+  type: website
+  output-dir: _build
+  preview:
+    #port: 5554 # use the same port instead of a new one each time
+    browser: true
+
+website:
+  title: "Truthbrush Documentation Site"
+
+  site-url: https://stanfordio.github.io/truthbrush/
+  repo-url: https://github.com/stanfordio/truthbrush
+  repo-branch: main
+  repo-subdir: docs
+  repo-actions: [edit, issue, source]
+
+  search: true
+  page-navigation: true # adds buttons at bottom of page
+
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    #code-copy: true
+
+
+#
+# PYTHON PACKAGE AUTO-DOCUMENTATION
+#
+
+# https://machow.github.io/quartodoc/get-started/basic-docs.html
+quartodoc:
+  # the name used to import the package you want to create reference docs for
+  package: truthbrush
+  #version: "v1.0.1"
+
+  # directory relative to current (docs/)
+  dir: reference
+
+  #style: pkgdown
+
+  title: Function Reference
+
+  sections:
+    - title: Some functions
+      desc: Functions to exemplify auto documentation.
+      contents:
+        - api.Api
+        - cli
