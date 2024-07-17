@@ -10,8 +10,8 @@ Currently, this tool can:
 * Pull "trending" Truth posts
 * Pull ads
 * Pull a user's metadata
-* Pull "trending" groups 
-* Pull list of suggested groups 
+* Pull "trending" groups
+* Pull list of suggested groups
 * Pull "trending" group hashtags
 * Pull posts from group timeline
 
@@ -48,7 +48,7 @@ Commands:
   user               Pull a user's metadata.
   likes              Pull the list of users who liked a post
   groupposts         Pull posts from a groups's timeline
-  grouptags         Pull trending group tags. 
+  grouptags         Pull trending group tags.
   grouptrends       Pull trending groups.
   groupsuggestions  Pull list of suggested groups.
 ``````
@@ -101,13 +101,13 @@ truthbrush grouptags
 
 **Pull trending groups**
 
-```bash 
-truthbrush grouptrends      
-``` 
+```bash
+truthbrush grouptrends
+```
 
 **Pull list of suggested groups**
 
-```bash 
+```bash
 truthbrush groupsuggestions
 ```
 
