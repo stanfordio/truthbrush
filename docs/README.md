@@ -14,10 +14,18 @@ brew install --cask quarto
 If you use VS Code, you can also consider installing the [Quarto Extension](https://marketplace.visualstudio.com/items?itemName=quarto.quarto).
 
 
-## Docs Requirements
+## Docs Environment
 
-```
-pip install -r docs/requirements.txt
+Setup environment and install package dependencies:
+
+```sh
+conda create -n truthbrush-docs python=3.9
+conda activate truthbrush-docs
+
+conda install -c conda-forge poetry
+poetry install
+
+pip install -r docs/requirements.txt # todo: use poetry instead?
 ```
 
 

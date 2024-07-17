@@ -1,0 +1,10 @@
+# Function Reference {.doc .doc-index}
+
+## Some functions
+
+Functions to exemplify auto documentation.
+
+| | |
+| --- | --- |
+| [api.Api](api.Api.qmd#truthbrush.api.Api) |  |
+| [cli](cli.qmd#truthbrush.cli) | Defines the CLI for Truthbrush. |
