@@ -28,13 +28,14 @@ website:
       - href: index.qmd
         text: Home
 
-
       - section:
         href: reference/index.qmd
         title: "Truthbrush Package Reference"
         contents:
-          - reference/api.Api.qmd
-          - reference/cli.qmd
+          - href: reference/api.Api.qmd
+            text: "API Reference"
+          - href: reference/cli.qmd
+            text: "CLI Reference"
 
 
 
@@ -68,6 +69,13 @@ quartodoc:
       desc: Functions related to the Python API.
       contents:
         - api.Api
+
+    #- title: API Reference
+    #  desc: Functions related to the Python API.
+    #  package: truthbrush.api
+    #  contents:
+    #    - Api
+
     - title: CLI Reference
       desc: Functions related to the command line interface (CLI).
       contents:

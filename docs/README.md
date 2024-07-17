@@ -4,12 +4,11 @@
 
 ### Quarto
 
-We need to install Quarto onto the local machine. You can [download](https://quarto.org/docs/get-started/), or [install via homebrew](https://formulae.brew.sh/cask/quarto) (if you like that kind of thing):
+The documentation site is built using [Quarto](https://quarto.org/). Quarto can be [downloaded](https://quarto.org/docs/get-started/), or [installed via homebrew](https://formulae.brew.sh/cask/quarto) (if you like that kind of thing):
 
 ```sh
 brew install --cask quarto
 ```
-
 
 If you use VS Code, you can also consider installing the [Quarto Extension](https://marketplace.visualstudio.com/items?itemName=quarto.quarto).
 
@@ -25,16 +24,16 @@ conda activate truthbrush-docs
 conda install -c conda-forge poetry
 poetry install
 
-pip install -r docs/requirements.txt # todo: use poetry instead?
+pip install -r docs/requirements.txt # todo: use poetry instead!
 ```
 
 
 
 ## Auto Documentation
 
-In the ["_quarto.yml" config file](/docs/_quarto.yml), we specify in the `quartodoc` section that our site should display "references/index.qmd", which will act as the entrypoint into the package auto-documentation.
+In the "quartodoc" section of the ["_quarto.yml" config file](/docs/_quarto.yml), we specify that our site should display "references/index.qmd", which acts as the entrypoint into the package auto-documentation.
 
-Using quartodoc to automatically generate docstring content into the "docs/references" directory:
+We are using [quartodoc](https://machow.github.io/quartodoc/get-started/basic-docs.html) to automatically generate docstring content into the "docs/references" directory:
 
 ```sh
 quartodoc build --config docs/_quarto.yml --verbose
@@ -64,4 +63,4 @@ quarto render docs/ --verbose
 
 We are using the ["quarto-pages.yml" workflow configuration file](/.github/workflows/quarto-pages.yml) to deploy the site to GitHub Pages when new commits are pushed to the main branch.
 
-In order for this to work, you first need to configure your GitHub Pages repo settings to publish via GitHub Actions.
+In order for this to work, the GitHub Pages repo settings need to be configured to publish via GitHub Actions.
