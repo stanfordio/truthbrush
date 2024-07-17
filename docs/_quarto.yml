@@ -18,10 +18,25 @@ website:
   page-navigation: true # adds buttons at bottom of page
 
   navbar:
-    left:
+    right:
       - href: index.qmd
         text: Home
       - about.qmd
+
+  sidebar:
+    contents:
+      - href: index.qmd
+        text: Home
+
+
+      - section:
+        href: reference/index.qmd
+        title: "Truthbrush Package Reference"
+        contents:
+          - reference/api.Api.qmd
+          - reference/cli.qmd
+
+
 
 format:
   html:
@@ -46,11 +61,14 @@ quartodoc:
 
   #style: pkgdown
 
-  title: Function Reference
+  title: Truthbrush Package Reference
 
   sections:
-    - title: Some functions
-      desc: Functions to exemplify auto documentation.
+    - title: API Reference
+      desc: Functions related to the Python API.
       contents:
         - api.Api
+    - title: CLI Reference
+      desc: Functions related to the command line interface (CLI).
+      contents:
         - cli

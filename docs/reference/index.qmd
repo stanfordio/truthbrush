@@ -1,10 +1,17 @@
-# Function Reference {.doc .doc-index}
+# Truthbrush Package Reference {.doc .doc-index}
 
-## Some functions
+## API Reference
 
-Functions to exemplify auto documentation.
+Functions related to the Python API.
 
 | | |
 | --- | --- |
 | [api.Api](api.Api.qmd#truthbrush.api.Api) |  |
+
+## CLI Reference
+
+Functions related to the command line interface (CLI).
+
+| | |
+| --- | --- |
 | [cli](cli.qmd#truthbrush.cli) | Defines the CLI for Truthbrush. |
