@@ -44,6 +44,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest
+        poetry add python-dateutil
         poetry install
 
     # LINTING
