@@ -22,9 +22,7 @@ conda create -n truthbrush-docs python=3.9
 conda activate truthbrush-docs
 
 conda install -c conda-forge poetry
-poetry install
-
-pip install -r docs/requirements.txt # todo: use poetry instead!
+poetry install --with docs
 ```
 
 

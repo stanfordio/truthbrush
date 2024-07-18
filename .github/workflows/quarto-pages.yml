@@ -32,25 +32,33 @@ jobs:
     # PYTHON STUFF
     #
 
-    # INSTALL PYTHON
-    - name: Set up Python 3.11
+    - name: Install Python 3.11
       uses: actions/setup-python@v4
       with:
         python-version: 3.11
 
-    # INSTALL PACKAGE DEPENDENCIES (IF YOU ARE DOCUMENTING YOUR PACKAGE)
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
+    # PACKAGE DEPENDENCIES
+
+    #- name: Install dependencies
+    #  run: |
+    #    pip install -r requirements.txt
 
     # INSTALL DOCUMENTATION DEPENDENCIES
-    - name: Install docs dependencies
-      run: |
-        pip install -r docs/requirements.txt
+    #- name: Install docs dependencies
+    #  run: |
+    #    pip install -r docs/requirements.txt
 
-    # TODO: adapt to use poetry instead!
+    # TODO: use poetry instead!
     # https://github.com/marketplace/actions/python-poetry-action
+    # poetry install --with test,docs
 
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+
+    # https://python-poetry.org/docs/managing-dependencies/#dependency-groups
+    - name: Install dependencies with Poetry
+      run: |
+        poetry install --with docs
 
 
 
