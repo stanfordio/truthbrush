@@ -40,6 +40,17 @@ class LoginErrorException(Exception):
 
 
 class Api:
+    """A client for interfacing with the Truth Social API.
+
+    Params:
+        username (str): The user name for logging in to Truth Social.
+        password (str): The password for logging in to Truth Social.
+
+    Examples:
+        >>> from truthbrush import Api
+        >>> client = Api(username="yourname", password="yourpass")
+    """
+
     def __init__(
         self,
         username=TRUTHSOCIAL_USERNAME,
@@ -145,7 +156,7 @@ class Api:
             # Will also sleep
             self._check_ratelimit(resp)
 
-    def userLikes(self, post: str, top_num: int = 40) -> bool | Any:
+    def user_likes(self, post: str, top_num: int = 40):
         """Return the top_num most recent users who liked the post."""
         self.__check_login()
         top_num = int(top_num)
@@ -327,12 +338,28 @@ class Api:
     ) -> List[dict]:
         """Pull the given user's statuses.
 
-        Params:
-            created_after : timezone aware datetime object
-            since_id : number or string
+        Use the `created_after` or `since_id` parameters to filter posts,
+            retaining only the posts created afterwards.
 
-        Returns a list of posts in reverse chronological order,
+        Returns a generator of posts in reverse chronological order,
             or an empty list if not found.
+
+        Params:
+            created_after (timezone aware datetime object):
+                The timestamp of a post you have pulled most recently.
+
+            since_id (number or string):
+                The identifier of a post you have pulled most recently.
+
+        Examples:
+            >>> statuses = client.pull_statuses(username="user123")
+            >>> print(len(list(statuses)))
+
+            >>> recent_statuses = client.pull_statuses(
+            ...     username="user123",
+            ...     since_id="0123456789"
+            ... )
+            >>> print(len(list(recent_statuses)))
         """
 
         params = {}
@@ -396,7 +423,7 @@ class Api:
                     since_id and post["id"] <= since_id
                 ):
                     keep_going = False  # stop the loop, request no more pages
-                    break  # do not yeild this post or remaining (older) posts on this page
+                    break  # do not yield this post or remaining (older) posts on this page
 
                 if verbose:
                     logger.debug(f"{post['id']} {post['created_at']}")

@@ -147,6 +147,9 @@ pytest
 
 # optionally run tests with verbose logging outputs:
 pytest --log-cli-level=DEBUG -s
+
+# optionally run tests with suppressed warnings:
+pytest --disable-pytest-warnings
 ```
 
 Please format your code with `black`:

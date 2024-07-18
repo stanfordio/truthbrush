@@ -62,6 +62,8 @@ quartodoc:
 
   #style: pkgdown
 
+  parser: google # "numpy" or "google" or "sphinx"
+
   title: Truthbrush Package Reference
 
   sections:

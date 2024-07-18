@@ -2,7 +2,21 @@
 
 `api.Api(self, username=TRUTHSOCIAL_USERNAME, password=TRUTHSOCIAL_PASSWORD, token=TRUTHSOCIAL_TOKEN)`
 
+A client for interfacing with the Truth Social API.
 
+## Parameters
+
+| Name       | Type   | Description                                   | Default                |
+|------------|--------|-----------------------------------------------|------------------------|
+| `username` | str    | The user name for logging in to Truth Social. | `TRUTHSOCIAL_USERNAME` |
+| `password` | str    | The password for logging in to Truth Social.  | `TRUTHSOCIAL_PASSWORD` |
+
+## Examples
+
+```python
+>>> from truthbrush import Api
+>>> client = Api(username="yourname", password="yourpass")
+```
 
 ## Methods
 
@@ -19,7 +33,7 @@
 | [tags](#truthbrush.api.Api.tags) | Return trending tags. |
 | [trending](#truthbrush.api.Api.trending) | Return trending truths. |
 | [trending_groups](#truthbrush.api.Api.trending_groups) | Return trending group truths. |
-| [userLikes](#truthbrush.api.Api.userLikes) | Return the top_num most recent users who liked the post. |
+| [user_likes](#truthbrush.api.Api.user_likes) | Return the top_num most recent users who liked the post. |
 
 ### ads { #truthbrush.api.Api.ads }
 
@@ -51,12 +65,33 @@ Lookup a user's information.
 
 Pull the given user's statuses.
 
-Params:
-    created_after : timezone aware datetime object
-    since_id : number or string
+Use the `created_after` or `since_id` parameters to filter posts,
+    retaining only those created since.
 
-Returns a list of posts in reverse chronological order,
+Returns a generator of posts in reverse chronological order,
     or an empty list if not found.
+
+#### Parameters
+
+| Name            | Type                           | Description                                             | Default   |
+|-----------------|--------------------------------|---------------------------------------------------------|-----------|
+| `created_after` | timezone aware datetime object | The timestamp of a post you have pulled most recently.  | `None`    |
+| `since_id`      | number or string               | The identifier of a post you have pulled most recently. | `None`    |
+
+#### Examples
+
+```python
+>>> statuses = client.pull_statuses(username="user123")
+>>> print(len(list(statuses)))
+```
+
+```python
+>>> recent_statuses = client.pull_statuses(
+...     username="user123",
+...     since_id="0123456789"
+... )
+>>> print(len(list(recent_statuses)))
+```
 
 ### search { #truthbrush.api.Api.search }
 
@@ -96,8 +131,8 @@ Optional arg limit<20 specifies number to return.
 Return trending group truths.
 Optional arg limit<20 specifies number to return.
 
-### userLikes { #truthbrush.api.Api.userLikes }
+### user_likes { #truthbrush.api.Api.user_likes }
 
-`api.Api.userLikes(post, top_num=40)`
+`api.Api.user_likes(post, top_num=40)`
 
 Return the top_num most recent users who liked the post.
