@@ -158,6 +158,11 @@ Please format your code with `black`:
 black .
 ```
 
+### Continuous Integration
+
+The Continuous Integration build is controlled via the "python-app" workflow file. To make the build pass, the environment variables `TRUTHSOCIAL_USERNAME` and `TRUTHSOCIAL_PASSWORD` must be set as GitHub repository secrets.
+
+
 ## Wishlist
 
 Support for the following capabilities is planned:

@@ -60,5 +60,9 @@ jobs:
     # TESTS
 
     - name: Test with pytest
+      env:
+        # set environment variable to use during testing
+        TRUTHSOCIAL_USERNAME: ${{ secrets.TRUTHSOCIAL_USERNAME }}
+        TRUTHSOCIAL_PASSWORD: ${{ secrets.TRUTHSOCIAL_PASSWORD }}
       run: |
         poetry run pytest
