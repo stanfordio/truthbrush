@@ -9,11 +9,11 @@ Currently, this tool can:
 * Pull "trending" hashtags
 * Pull "trending" Truth posts
 * Pull ads
-* Pull a user's metadata 
-* Pull the list of users who liked a post 
+* Pull a user's metadata
+* Pull the list of users who liked a post
 * Pull the list of comments on a post
-* Pull "trending" groups 
-* Pull list of suggested groups 
+* Pull "trending" groups
+* Pull list of suggested groups
 * Pull "trending" group hashtags
 * Pull posts from group timeline
 
@@ -41,25 +41,17 @@ Options:
 
 
 Commands:
-  search       Search for users, statuses or hashtags.
-  statuses     Pull a user's statuses.
-  suggestions  Pull the list of suggested users.
-  tags         Pull trendy tags.
-  trends       Pull trendy Truths.
-  ads          Pull ads.
-  user         Pull a user's metadata.
-  likes        Pull the list of users who liked a post
-  search             Search for users, statuses, groups, or hashtags.
-  statuses           Pull a user's statuses.
-  suggestions        Pull the list of suggested users.
-  tags               Pull trendy tags.
-  trends             Pull trendy Truths.
-  ads                Pull ads.
-  user               Pull a user's metadata.
-  likes              Pull the list of users who liked a post
-  comments     Pull the list of oldest comments on a post
-  groupposts         Pull posts from a groups's timeline
-  grouptags         Pull trending group tags. 
+  search            Search for users, statuses or hashtags.
+  statuses          Pull a user's statuses.
+  suggestions       Pull the list of suggested users.
+  tags              Pull trendy tags.
+  trends            Pull trendy Truths.
+  ads               Pull ads.
+  user              Pull a user's metadata.
+  likes             Pull the list of users who liked a post
+  comments          Pull the list of oldest comments on a post
+  groupposts        Pull posts from a groups's timeline
+  grouptags         Pull trending group tags.
   grouptrends       Pull trending groups.
   groupsuggestions  Pull list of suggested groups.
 
@@ -119,13 +111,13 @@ truthbrush grouptags
 
 **Pull trending groups**
 
-```bash 
-truthbrush grouptrends      
-``` 
+```bash
+truthbrush grouptrends
+```
 
 **Pull list of suggested groups**
 
-```bash 
+```bash
 truthbrush groupsuggestions
 ```
 
