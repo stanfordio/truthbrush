@@ -1,11 +1,9 @@
 """Defines the CLI for Truthbrush."""
 
 import json
-import os
 import click
 from datetime import date
 import datetime
-
 from .api import Api
 
 api = Api()
@@ -170,8 +168,24 @@ def statuses(
 
 @cli.command()
 @click.argument("post")
+@click.option("--includeall", is_flag=True, help="return all comments on post.")
 @click.argument("top_num")
-def likes(post: str, top_num: int):
+def likes(post: str, includeall: bool, top_num: int):
     """Pull the top_num most recent users who liked the post."""
-    for page in api.userLikes(post, top_num):
+    for page in api.user_likes(post, includeall, top_num):
         print(json.dumps(page))
+
+
+@cli.command()
+@click.argument("post")
+@click.option(
+    "--includeall", is_flag=True, help="return all comments on post. Overrides top_num."
+)
+@click.option(
+    "--onlyfirst", is_flag=True, help="return only direct replies to specified post"
+)
+@click.argument("top_num")
+def comments(post: str, includeall: bool, onlyfirst: bool, top_num: int = 40):
+    """Pull the top_num comments on a post (defaults to all users, including replies)."""
+    for page in api.pull_comments(post, includeall, onlyfirst, top_num):
+        print(page)
