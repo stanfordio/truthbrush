@@ -10,7 +10,7 @@ readme = "README.md"
 truthbrush = "truthbrush.cli:cli"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 click = "^8.1.0"
 loguru = "^0.7.0"
 python-dotenv = "^1.0.1"
