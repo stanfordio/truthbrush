@@ -15,6 +15,17 @@ def cli():
 
 
 @cli.command()
+@click.argument("group_id")
+@click.option(
+    "--limit", default=20, help="Limit the number of items returned", type=int
+)
+def groupposts(group_id: str, limit: int):
+    """Pull posts from group timeline"""
+
+    print(json.dumps(api.group_posts(group_id, limit)))
+
+
+@cli.command()
 def trends():
     """Pull trendy Truths."""
 
@@ -29,6 +40,27 @@ def tags():
 
 
 @cli.command()
+def grouptags():
+    """Pull group tags."""
+
+    print(json.dumps(api.group_tags()))
+
+
+@cli.command()
+def grouptrends():
+    """Pull group trends."""
+
+    print(json.dumps(api.trending_groups()))
+
+
+@cli.command()
+def groupsuggest():
+    """Pull group suggestions."""
+
+    print(json.dumps(api.suggested_groups()))
+
+
+@cli.command()
 @click.argument("handle")
 def user(handle: str):
     """Pull a user's metadata."""
@@ -40,15 +72,15 @@ def user(handle: str):
 @click.argument("query")
 @click.option(
     "--searchtype",
-    help="Type of search query (accounts, statuses, or hashtags)",
-    type=click.Choice(["accounts", "statuses", "hashtags"]),
+    help="Type of search query (accounts, statuses, groups, or hashtags)",
+    type=click.Choice(["accounts", "statuses", "hashtags", "groups"]),
 )
 @click.option(
     "--limit", default=40, help="Limit the number of items returned", type=int
 )
 @click.option("--resolve", help="Resolve", type=bool)
 def search(searchtype: str, query: str, limit: int, resolve: bool):
-    """Search for users, statuses or hashtags."""
+    """Search for users, statuses, groups, or hashtags."""
 
     for page in api.search(searchtype, query, limit, resolve):
         print(json.dumps(page[searchtype]))

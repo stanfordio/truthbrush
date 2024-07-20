@@ -34,6 +34,7 @@ proxies = {"http": os.getenv("http_proxy"), "https": os.getenv("https_proxy")}
 
 TRUTHSOCIAL_USERNAME = os.getenv("TRUTHSOCIAL_USERNAME")
 TRUTHSOCIAL_PASSWORD = os.getenv("TRUTHSOCIAL_PASSWORD")
+
 TRUTHSOCIAL_TOKEN = os.getenv("TRUTHSOCIAL_TOKEN")
 
 
@@ -63,6 +64,7 @@ class Api:
             if self.__password is None:
                 raise LoginErrorException("Password is missing.")
             self.auth_id = self.get_auth_id(self.__username, self.__password)
+            logger.warning(f"Using token {self.auth_id}")
 
     def _make_session(self):
         s = requests.Session()
@@ -88,7 +90,10 @@ class Api:
             logger.warning(
                 f"Approaching rate limit; sleeping for {time_to_sleep} seconds..."
             )
-            sleep(time_to_sleep)
+            if time_to_sleep > 0:
+                sleep(time_to_sleep)
+            else:
+                sleep(10)
 
     def _get(self, url: str, params: dict = None) -> Any:
         resp = self._make_session().get(
@@ -241,7 +246,8 @@ class Api:
                 )
 
             offset += 40
-            if not resp[searchtype]:
+            # added new not sure if helpful
+            if not resp or all(value == [] for value in resp.values()):
                 break
 
             yield resp
@@ -253,6 +259,21 @@ class Api:
         self.__check_login()
         return self._get(f"/v1/truth/trending/truths?limit={limit}")
 
+    def group_posts(self, group_id: str, limit=20):
+        self.__check_login()
+        timeline = []
+        posts = self._get(f"/v1/timelines/group/{group_id}?limit={limit}")
+        while posts != None:
+            timeline += posts
+            limit = limit - len(posts)
+            if limit <= 0:
+                break
+            max_id = posts[-1]["id"]
+            posts = self._get(
+                f"/v1/timelines/group/{group_id}?max_id={max_id}&limit={limit}"
+            )
+        return timeline
+
     def tags(self):
         """Return trending tags."""
 
@@ -263,6 +284,24 @@ class Api:
         """Return a list of suggested users to follow."""
         self.__check_login()
         return self._get(f"/v2/suggestions?limit={maximum}")
+
+    def trending_groups(self, limit=10):
+        """Return trending group truths.
+        Optional arg limit<20 specifies number to return."""
+
+        self.__check_login()
+        return self._get(f"/v1/truth/trends/groups?limit={limit}")
+
+    def group_tags(self):
+        """Return trending group tags."""
+
+        self.__check_login()
+        return self._get("/v1/groups/tags")
+
+    def suggested_groups(self, maximum: int = 50) -> dict:
+        """Return a list of suggested groups to follow."""
+        self.__check_login()
+        return self._get(f"/v1/truth/suggestions/groups?limit={maximum}")
 
     def ads(self, device: str = "desktop") -> dict:
         """Return a list of ads from Rumble's Ad Platform via Truth Social API."""
