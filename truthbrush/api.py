@@ -49,6 +49,13 @@ class Api:
     Examples:
         >>> from truthbrush import Api
         >>> client = Api(username="yourname", password="yourpass")
+
+        To avoid hard-coding your secret credentials, you are encouraged to use environment variables
+        `TRUTHSOCIAL_USERNAME` and `TRUTHSOCIAL_PASSWORD`, for example stored in a local ".env" file.
+        You could then pass these environment variables, or omit because they are used by default:
+
+        >>> from truthbrush import Api
+        >>> client = Api() # assuming you have set env vars
     """
 
     def __init__(

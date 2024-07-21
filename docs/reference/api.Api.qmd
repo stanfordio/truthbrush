@@ -18,6 +18,15 @@ A client for interfacing with the Truth Social API.
 >>> client = Api(username="yourname", password="yourpass")
 ```
 
+To avoid hard-coding your secret credentials, you are encouraged to use environment variables
+`TRUTHSOCIAL_USERNAME` and `TRUTHSOCIAL_PASSWORD`, for example stored in a local ".env" file.
+You could then pass these environment variables, or omit because they are used by default:
+
+```python
+>>> from truthbrush import Api
+>>> client = Api() # assuming you have set env vars
+```
+
 ## Methods
 
 | Name | Description |
@@ -66,7 +75,7 @@ Lookup a user's information.
 Pull the given user's statuses.
 
 Use the `created_after` or `since_id` parameters to filter posts,
-    retaining only those created since.
+    retaining only the posts created afterwards.
 
 Returns a generator of posts in reverse chronological order,
     or an empty list if not found.
