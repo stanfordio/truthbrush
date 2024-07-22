@@ -14,7 +14,7 @@ on:
     #paths:
     #- docs/**
 
-  pull_request:
+  #pull_request:
     #branches: [ "main" ]
 
   # make this workflow manually runnable
