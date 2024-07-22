@@ -187,7 +187,7 @@ def test_topics(client):
     # each tag has a name and number of recent posts:
     tag = tags[0]
     assert isinstance(tag, dict)
-    assert list(tag.keys()) == [
+    assert sorted(list(tag.keys())) == [
         "history",
         "name",
         "recent_history",
