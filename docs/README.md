@@ -18,7 +18,7 @@ If you use VS Code, you can also consider installing the [Quarto Extension](http
 Setup environment and install package dependencies:
 
 ```sh
-conda create -n truthbrush-docs python=3.9
+conda create -n truthbrush-docs python=3.10
 conda activate truthbrush-docs
 
 conda install -c conda-forge poetry

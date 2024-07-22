@@ -10,12 +10,17 @@ Currently, this tool can:
 * Pull "trending" Truth posts
 * Pull ads
 * Pull a user's metadata
+<<<<<<< HEAD
+=======
+* Pull the list of users who liked a post
+* Pull the list of comments on a post
+>>>>>>> main
 * Pull "trending" groups
 * Pull list of suggested groups
 * Pull "trending" group hashtags
 * Pull posts from group timeline
 
-Truthbrush is designed for academic research, open source intelligence gathering, and data archival. It pulls all of the data from the publicly accessible API.
+Truthbrush is designed for academic research, open source intelligence gathering, and data archival. It pulls all data from the publicly accessible API.
 
 ## Installation
 
@@ -39,6 +44,7 @@ Options:
 
 
 Commands:
+<<<<<<< HEAD
   search             Search for users, statuses, groups, or hashtags.
   statuses           Pull a user's statuses.
   suggestions        Pull the list of suggested users.
@@ -48,9 +54,22 @@ Commands:
   user               Pull a user's metadata.
   likes              Pull the list of users who liked a post
   groupposts         Pull posts from a groups's timeline
+=======
+  search            Search for users, statuses or hashtags.
+  statuses          Pull a user's statuses.
+  suggestions       Pull the list of suggested users.
+  tags              Pull trendy tags.
+  trends            Pull trendy Truths.
+  ads               Pull ads.
+  user              Pull a user's metadata.
+  likes             Pull the list of users who liked a post
+  comments          Pull the list of oldest comments on a post
+  groupposts        Pull posts from a groups's timeline
+>>>>>>> main
   grouptags         Pull trending group tags.
   grouptrends       Pull trending groups.
   groupsuggestions  Pull list of suggested groups.
+
 ``````
 
 **Search for users, statuses, groups, or hashtags**
@@ -90,7 +109,13 @@ truthbrush user HANDLE
 **Pull the list of users who liked a post**
 
 ```bash
-truthbrush likes POST TOP_NUM
+truthbrush likes POST --includeall TOP_NUM
+```
+
+**Pull the list of oldest comments on a post**
+
+```bash
+truthbrush comments POST --includeall --onlyfirst TOP_NUM
 ```
 
 **Pull trending group tags**
@@ -133,7 +158,7 @@ truthbrush --help # will use your local copy of truthbrush
 If you prefer not to install Poetry in your root environment, you can also use Conda:
 
 ```sh
-conda create -n truthbrush-env python=3.9
+conda create -n truthbrush-env python=3.10
 conda activate truthbrush-env
 
 conda install -c conda-forge poetry
