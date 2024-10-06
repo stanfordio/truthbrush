@@ -96,16 +96,19 @@ class Api:
                 sleep(10)
 
     def _get(self, url: str, params: dict = None) -> Any:
-        resp = self._make_session().get(
-            API_BASE_URL + url,
-            params=params,
-            proxies=proxies,
-            impersonate="chrome120",
-            headers={
-                "Authorization": "Bearer " + self.auth_id,
-                "User-Agent": USER_AGENT,
-            },
-        )
+        try:
+            resp = self._make_session().get(
+                API_BASE_URL + url,
+                params=params,
+                proxies=proxies,
+                impersonate="chrome123",
+                headers={
+                    "Authorization": "Bearer " + self.auth_id,
+                    "User-Agent": USER_AGENT,
+                },
+            )
+        except curl_cffi.curl.CurlError as e:
+            logger.error(f"Curl error: {e}")
 
         # Will also sleep
         self._check_ratelimit(resp)
@@ -306,6 +309,7 @@ class Api:
     def ads(self, device: str = "desktop") -> dict:
         """Return a list of ads from Rumble's Ad Platform via Truth Social API."""
 
+        self.__check_login()
         return self._get(f"/v3/truth/ads?device={device}")
 
     def user_followers(
