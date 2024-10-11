@@ -1,3 +1,4 @@
+from functools import wraps
 from time import sleep
 from typing import Any, Iterator, List, Optional, Union
 from loguru import logger
@@ -79,19 +80,20 @@ class Api:
         self.ratelimit_max = 300
         self.ratelimit_remaining = None
         self.ratelimit_reset = None
-        self.__username = username
-        self.__password = password
+        self._username = username
+        self._password = password
         self.auth_id = token
 
-    def __check_login(self):
-        """Runs before any login-walled function to check for login credentials and generates an auth ID token"""
+    def _check_login(self):
+        """Checks for login credentials and generates an auth ID token.
+            Developer Note: consider making this a decorator function and wrapping the API calls that need this.
+        """
         if self.auth_id is None:
-            if self.__username is None:
+            if self._username is None:
                 raise LoginErrorException("Username is missing.")
-            if self.__password is None:
+            if self._password is None:
                 raise LoginErrorException("Password is missing.")
-            breakpoint()
-            self.auth_id = self.get_auth_id(self.__username, self.__password)
+            self.auth_id = self.get_auth_id(self._username, self._password)
             logger.warning(f"Using token {self.auth_id}")
 
     def _make_session(self):
@@ -179,11 +181,12 @@ class Api:
             # Will also sleep
             self._check_ratelimit(resp)
 
+    #@authenticated
     def user_likes(
         self, post: str, include_all: bool = False, top_num: int = 40
     ) -> Union[bool, Any]:
         """Return the top_num most recent (or all) users who liked the post."""
-        self.__check_login()
+        self._check_login() # todo: use decorator instead
         top_num = int(top_num)
         if top_num < 1:
             return
@@ -198,6 +201,7 @@ class Api:
                 if not include_all and n_output >= top_num:
                     return
 
+    #@authenticated
     def pull_comments(
         self,
         post: str,
@@ -206,7 +210,7 @@ class Api:
         top_num: int = 40,
     ):
         """Return the top_num oldest (or all) replies to a post."""
-        self.__check_login()
+        self._check_login() # todo: use decorator instead
         top_num = int(top_num)
         if top_num < 1:
             return
@@ -225,10 +229,11 @@ class Api:
                     if not include_all and n_output >= top_num:
                         return
 
+    #@authenticated
     def lookup(self, user_handle: str = None) -> Optional[dict]:
         """Lookup a user's information."""
 
-        self.__check_login()
+        self._check_login() # todo: use decorator instead
         assert user_handle is not None
         return self._get("/v1/accounts/lookup", params=dict(acct=user_handle))
 
@@ -244,7 +249,7 @@ class Api:
     ) -> Optional[dict]:
         """Search users, statuses or hashtags."""
 
-        self.__check_login()
+        self._check_login()
         assert query is not None and searchtype is not None
 
         page = 0
@@ -292,12 +297,12 @@ class Api:
 
         """
 
-        self.__check_login()
+        self._check_login()
         return self._get(f"/v1/truth/trending/truths?limit={limit}")
 
     def group_posts(self, group_id: str, limit=20):
         """Return posts for a given group."""
-        self.__check_login()
+        self._check_login()
         timeline = []
         posts = self._get(f"/v1/timelines/group/{group_id}?limit={limit}")
         while posts != None:
@@ -314,36 +319,36 @@ class Api:
     def tags(self):
         """Return trending tags."""
 
-        self.__check_login()
+        self._check_login()
         return self._get("/v1/trends")
 
     def suggested(self, maximum: int = 50) -> dict:
         """Return a list of suggested users to follow."""
-        self.__check_login()
+        self._check_login()
         return self._get(f"/v2/suggestions?limit={maximum}")
 
     def trending_groups(self, limit=10):
         """Return trending group truths.
         Optional arg limit<20 specifies number to return."""
 
-        self.__check_login()
+        self._check_login()
         return self._get(f"/v1/truth/trends/groups?limit={limit}")
 
     def group_tags(self):
         """Return trending group tags."""
 
-        self.__check_login()
+        self._check_login()
         return self._get("/v1/groups/tags")
 
     def suggested_groups(self, maximum: int = 50) -> dict:
         """Return a list of suggested groups to follow."""
-        self.__check_login()
+        self._check_login()
         return self._get(f"/v1/truth/suggestions/groups?limit={maximum}")
 
     def ads(self, device: str = "desktop") -> dict:
         """Return a list of ads from Rumble's Ad Platform via Truth Social API."""
 
-        self.__check_login()
+        self._check_login()
         return self._get(f"/v3/truth/ads?device={device}")
 
     def user_followers(
