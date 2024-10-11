@@ -281,12 +281,18 @@ class Api:
 
     def trending(self, limit=10):
         """Return trending truths.
-        Optional arg limit<20 specifies number to return."""
+
+        Params:
+            limit (int, optional): specifies number of items to return (max 20)
+                Defaults to 10.
+
+        """
 
         self.__check_login()
         return self._get(f"/v1/truth/trending/truths?limit={limit}")
 
     def group_posts(self, group_id: str, limit=20):
+        """Return posts for a given group."""
         self.__check_login()
         timeline = []
         posts = self._get(f"/v1/timelines/group/{group_id}?limit={limit}")

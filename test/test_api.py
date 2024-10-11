@@ -178,7 +178,7 @@ def test_pull_statuses_recent(client, user_timeline):
 # TAGS / TOPICS
 #
 
-def test_topics(client):
+def test_trending_tags(client):
     # it pulls a list of tags displayed on the topics tab of the search page:
     tags = client.tags()
     assert isinstance(tags, list)
