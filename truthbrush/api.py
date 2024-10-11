@@ -1,5 +1,5 @@
 from time import sleep
-from typing import Any, Iterator, List, Optional
+from typing import Any, Iterator, List, Optional, Union
 from loguru import logger
 from dateutil import parser as date_parse
 from datetime import datetime, timezone, date
@@ -90,6 +90,7 @@ class Api:
                 raise LoginErrorException("Username is missing.")
             if self.__password is None:
                 raise LoginErrorException("Password is missing.")
+            breakpoint()
             self.auth_id = self.get_auth_id(self.__username, self.__password)
             logger.warning(f"Using token {self.auth_id}")
 
@@ -180,7 +181,7 @@ class Api:
 
     def user_likes(
         self, post: str, include_all: bool = False, top_num: int = 40
-    ) -> bool | Any:
+    ) -> Union[bool, Any]:
         """Return the top_num most recent (or all) users who liked the post."""
         self.__check_login()
         top_num = int(top_num)
