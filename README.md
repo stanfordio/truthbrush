@@ -10,11 +10,8 @@ Currently, this tool can:
 * Pull "trending" Truth posts
 * Pull ads
 * Pull a user's metadata
-<<<<<<< HEAD
-=======
 * Pull the list of users who liked a post
 * Pull the list of comments on a post
->>>>>>> main
 * Pull "trending" groups
 * Pull list of suggested groups
 * Pull "trending" group hashtags
@@ -44,17 +41,6 @@ Options:
 
 
 Commands:
-<<<<<<< HEAD
-  search             Search for users, statuses, groups, or hashtags.
-  statuses           Pull a user's statuses.
-  suggestions        Pull the list of suggested users.
-  tags               Pull trendy tags.
-  trends             Pull trendy Truths.
-  ads                Pull ads.
-  user               Pull a user's metadata.
-  likes              Pull the list of users who liked a post
-  groupposts         Pull posts from a groups's timeline
-=======
   search            Search for users, statuses or hashtags.
   statuses          Pull a user's statuses.
   suggestions       Pull the list of suggested users.
@@ -65,7 +51,6 @@ Commands:
   likes             Pull the list of users who liked a post
   comments          Pull the list of oldest comments on a post
   groupposts        Pull posts from a groups's timeline
->>>>>>> main
   grouptags         Pull trending group tags.
   grouptrends       Pull trending groups.
   groupsuggestions  Pull list of suggested groups.
