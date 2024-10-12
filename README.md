@@ -170,7 +170,7 @@ black .
 
 ### Continuous Integration
 
-The Continuous Integration build on GitHub Actions is controlled via the "python-app" workflow file. To make the build pass, the environment variables `TRUTHSOCIAL_USERNAME` and `TRUTHSOCIAL_PASSWORD` must be set as GitHub repository secrets.
+The Continuous Integration build on GitHub Actions is controlled via the "python-app.yml" workflow file. To make the build pass, the environment variables `TRUTHSOCIAL_USERNAME` and `TRUTHSOCIAL_PASSWORD` must be set as GitHub repository secrets.
 
 
 ## Wishlist
