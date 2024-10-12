@@ -1,7 +1,4 @@
-
 from truthbrush.utils import as_datetime
-
-
 
 
 def test_pull_statuses(user_timeline):

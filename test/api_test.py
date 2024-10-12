@@ -1,5 +1,9 @@
-
-from truthbrush.api import Api, TRUTHSOCIAL_USERNAME, TRUTHSOCIAL_PASSWORD, TRUTHSOCIAL_TOKEN
+from truthbrush.api import (
+    Api,
+    TRUTHSOCIAL_USERNAME,
+    TRUTHSOCIAL_PASSWORD,
+    TRUTHSOCIAL_TOKEN,
+)
 
 
 def test_client_initialization(client):

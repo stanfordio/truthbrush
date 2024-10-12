@@ -87,7 +87,7 @@ class Api:
 
     def _check_login(self):
         """Checks for login credentials and generates an auth ID token.
-            Developer Note: consider making this a decorator function and wrapping the API calls that need this.
+        Developer Note: consider making this a decorator function and wrapping the API calls that need this.
         """
         if self.auth_id is None:
             if self._username is None:
@@ -182,12 +182,12 @@ class Api:
             # Will also sleep
             self._check_ratelimit(resp)
 
-    #@authenticated
+    # @authenticated
     def user_likes(
         self, post: str, include_all: bool = False, top_num: int = 40
     ) -> Union[bool, Any]:
         """Return the top_num most recent (or all) users who liked the post."""
-        self._check_login() # todo: use decorator instead
+        self._check_login()  # todo: use decorator instead
         top_num = int(top_num)
         if top_num < 1:
             return
@@ -202,7 +202,7 @@ class Api:
                 if not include_all and n_output >= top_num:
                     return
 
-    #@authenticated
+    # @authenticated
     def pull_comments(
         self,
         post: str,
@@ -211,7 +211,7 @@ class Api:
         top_num: int = 40,
     ):
         """Return the top_num oldest (or all) replies to a post."""
-        self._check_login() # todo: use decorator instead
+        self._check_login()  # todo: use decorator instead
         top_num = int(top_num)
         if top_num < 1:
             return
@@ -230,11 +230,11 @@ class Api:
                     if not include_all and n_output >= top_num:
                         return
 
-    #@authenticated
+    # @authenticated
     def lookup(self, user_handle: str = None) -> Optional[dict]:
         """Lookup a user's information."""
 
-        self._check_login() # todo: use decorator instead
+        self._check_login()  # todo: use decorator instead
         assert user_handle is not None
         return self._get("/v1/accounts/lookup", params=dict(acct=user_handle))
 
@@ -573,7 +573,7 @@ class Api:
             sess_req.raise_for_status()
         except requests.RequestsError as e:
             logger.error(f"Failed login request: {str(e)}")
-            raise SystemExit('Cannot authenticate to .')
+            raise SystemExit("Cannot authenticate to .")
 
         if not sess_req.json()["access_token"]:
             raise ValueError("Invalid truthsocial.com credentials provided!")

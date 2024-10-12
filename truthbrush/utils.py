@@ -6,7 +6,5 @@ from dateutil import parser as date_parse
 
 
 def as_datetime(date_str):
-    """Datetime formatter function. Ensures timezone is UTC.
-
-    """
+    """Datetime formatter function. Ensures timezone is UTC."""
     return date_parse.parse(date_str).replace(tzinfo=timezone.utc)

@@ -1,4 +1,3 @@
-
 import pytest
 
 from truthbrush.api import Api
