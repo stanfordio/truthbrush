@@ -1,9 +1,8 @@
-from functools import wraps
 from time import sleep
 from typing import Any, Iterator, List, Optional, Union
 from loguru import logger
 from dateutil import parser as date_parse
-from datetime import datetime, timezone, date
+from datetime import datetime, timezone #, date
 from curl_cffi import requests
 import curl_cffi
 import json
@@ -98,8 +97,7 @@ class Api:
             logger.warning(f"Using token {self.auth_id}")
 
     def _make_session(self):
-        s = requests.Session()
-        return s
+        return requests.Session()
 
     def _check_ratelimit(self, resp):
         if resp.headers.get("x-ratelimit-limit") is not None:
@@ -182,7 +180,6 @@ class Api:
             # Will also sleep
             self._check_ratelimit(resp)
 
-    # @authenticated
     def user_likes(
         self, post: str, include_all: bool = False, top_num: int = 40
     ) -> Union[bool, Any]:
@@ -202,7 +199,6 @@ class Api:
                 if not include_all and n_output >= top_num:
                     return
 
-    # @authenticated
     def pull_comments(
         self,
         post: str,
@@ -230,7 +226,6 @@ class Api:
                     if not include_all and n_output >= top_num:
                         return
 
-    # @authenticated
     def lookup(self, user_handle: str = None) -> Optional[dict]:
         """Lookup a user's information."""
 
@@ -243,13 +238,19 @@ class Api:
         searchtype: str = None,
         query: str = None,
         limit: int = 40,
-        resolve: bool = 4,
+        resolve: bool = 4, # bool = 4 ?
         offset: int = 0,
         min_id: str = "0",
         max_id: str = None,
     ) -> Optional[dict]:
-        """Search users, statuses or hashtags."""
+        """Search users, statuses, hashtags, or groups.
 
+        Params :
+            searchtype (str) the resource type, one of: 'hashtags', 'accounts', 'statuses', or 'groups'.
+
+            query (str) : the name of the resource to search for.
+
+        """
         self._check_login()
         assert query is not None and searchtype is not None
 
@@ -282,12 +283,28 @@ class Api:
                     ),
                 )
 
-            offset += 40
+            offset += 40 # use limit here?
             # added new not sure if helpful
             if not resp or all(value == [] for value in resp.values()):
                 break
 
             yield resp
+
+
+    def search_simpler(self, resource_type: str, query: str, limit=40, offset=0):
+        """Search users, statuses, hashtags, or groups.
+
+        Params :
+            resource_type (str) the type of resource: 'hashtags', 'accounts', 'statuses', or 'groups'.
+
+            query (str) : the name of the resource to search for.
+        """
+        self._check_login()
+
+        params = dict(q=query, type=resource_type, limit=limit, offset=offset)
+        response = self._get("/v2/search", params=params)
+        results = response[resource_type] # return only the resources requested
+        return results
 
     def trending(self, limit=10):
         """Return trending truths.
@@ -305,13 +322,15 @@ class Api:
         """Return posts for a given group."""
         self._check_login()
         timeline = []
+
         posts = self._get(f"/v1/timelines/group/{group_id}?limit={limit}")
+
         while posts != None:
             timeline += posts
             limit = limit - len(posts)
             if limit <= 0:
                 break
-            max_id = posts[-1]["id"]
+            max_id = posts[-1]["id"] #> throws error when no results found
             posts = self._get(
                 f"/v1/timelines/group/{group_id}?max_id={max_id}&limit={limit}"
             )
