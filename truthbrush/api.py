@@ -184,7 +184,7 @@ class Api:
         self, post: str, include_all: bool = False, top_num: int = 40
     ) -> Union[bool, Any]:
         """Return the top_num most recent (or all) users who liked the post."""
-        self._check_login()  # todo: use decorator instead
+        self._check_login()
         top_num = int(top_num)
         if top_num < 1:
             return
@@ -207,7 +207,7 @@ class Api:
         top_num: int = 40,
     ):
         """Return the top_num oldest (or all) replies to a post."""
-        self._check_login()  # todo: use decorator instead
+        self._check_login()
         top_num = int(top_num)
         if top_num < 1:
             return
@@ -229,7 +229,7 @@ class Api:
     def lookup(self, user_handle: str = None) -> Optional[dict]:
         """Lookup a user's information."""
 
-        self._check_login()  # todo: use decorator instead
+        self._check_login()
         assert user_handle is not None
         return self._get("/v1/accounts/lookup", params=dict(acct=user_handle))
 
@@ -238,7 +238,7 @@ class Api:
         searchtype: str = None,
         query: str = None,
         limit: int = 40,
-        resolve: bool = 4, # bool = 4 ?
+        resolve: int = 4,
         offset: int = 0,
         min_id: str = "0",
         max_id: str = None,
