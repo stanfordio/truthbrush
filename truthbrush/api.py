@@ -238,7 +238,7 @@ class Api:
         searchtype: str = None,
         query: str = None,
         limit: int = 40,
-        resolve: int = 4,
+        resolve: bool = True,
         offset: int = 0,
         min_id: str = "0",
         max_id: str = None,
@@ -254,6 +254,7 @@ class Api:
         self._check_login()
         assert query is not None and searchtype is not None
 
+        resolve = 'true' if resolve else 'false'
         page = 0
         while page < limit:
             if max_id is None:
