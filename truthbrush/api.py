@@ -303,6 +303,9 @@ class Api:
 
         params = dict(q=query, type=resource_type, limit=limit, offset=offset)
         response = self._get("/v2/search", params=params)
+        if resource_type not in response:
+            raise ValueError(f"resource type {resource_type} not found in response")
+       
         results = response[resource_type] # return only the resources requested
         return results
 
