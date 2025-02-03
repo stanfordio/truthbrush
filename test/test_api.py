@@ -3,7 +3,7 @@ from dateutil import parser as date_parse
 
 import pytest
 
-from truthbrush.api import Api
+from truthbrush.api import Api, LoginErrorException
 
 
 @pytest.fixture(scope="module")
@@ -150,3 +150,8 @@ def test_pull_statuses(api):
         "_pulled",
     ]
     assert isinstance(latest["id"], str)
+
+
+def test_get_auth_id_raises_login_error_exception(api):
+    with pytest.raises(LoginErrorException):
+        api.get_auth_id("invalid_username", "invalid_password")
