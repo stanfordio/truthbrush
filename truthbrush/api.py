@@ -255,6 +255,41 @@ class Api:
 
             yield resp
 
+    def hashtag(
+        self,
+        tag: str = None,
+        limit: int = 100,
+    ) -> Optional[dict]:
+        """Collect posts with a specific hashtag."""
+
+        self.__check_login()
+        assert tag is not None
+        if tag.startswith("#"):
+            # Remove the hashtag symbol
+            tag = tag[1:]
+
+        num_results = 0
+        params = dict()
+        while num_results < limit:
+            logger.info(f"Collecting posts with hashtag: {tag}, max_id: {params.get('max_id')}")
+            resp = self._get(
+                f"/v1/timelines/tag/{tag}",
+                params=params,
+            )
+
+            if not resp:
+                break
+            
+            # Filter out empty results
+            results = [value for value in resp if value]
+            if not results:
+                break
+            
+            num_results += len(results)
+            params["max_id"] = results[-1]["id"]
+        
+            yield results
+
     def trending(self, limit=10):
         """Return trending truths.
         Optional arg limit<20 specifies number to return."""
