@@ -4,6 +4,7 @@ from loguru import logger
 from dateutil import parser as date_parse
 from datetime import datetime, timezone, date
 from curl_cffi import requests
+import curl_cffi
 import json
 import logging
 import os
