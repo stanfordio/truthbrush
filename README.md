@@ -21,7 +21,7 @@ Truthbrush is designed for academic research, open source intelligence gathering
 
 ## Installation
 
-**Note that Truthbrush requires Python 3.9 or higher.**
+**Note that Truthbrush requires Python 3.10 or higher.**
 
 From PyPi:
 
