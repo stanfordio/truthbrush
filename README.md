@@ -21,7 +21,21 @@ Truthbrush is designed for academic research, open source intelligence gathering
 
 ## Installation
 
-Truthbrush is not yet available on PyPI. To install it, run `pip install git+https://github.com/stanfordio/truthbrush.git`, or clone the repository and run `pip3 install .`. Provided your `pip` is setup correctly, this will make `truthbrush` available both as a command and as a Python package. **Note that Truthbrush requires Python 3.9 or higher.**
+**Note that Truthbrush requires Python 3.9 or higher.**
+
+From PyPi:
+
+```sh
+pip install truthbrush
+```
+
+From git:
+
+* To install it, run `pip install git+https://github.com/stanfordio/truthbrush.git`
+
+From source:
+
+* Clone the repository and run `pip3 install .`. Provided your `pip` is setup correctly, this will make `truthbrush` available both as a command and as a Python package.
 
 After installation, you will need to set your Truth Social username and password as environmental variables.
 
@@ -55,7 +69,7 @@ Commands:
   grouptrends       Pull trending groups.
   groupsuggestions  Pull list of suggested groups.
 
-``````
+```
 
 **Search for users, statuses, groups, or hashtags**
 
@@ -74,11 +88,13 @@ truthbrush statuses HANDLE
 ```bash
 truthbrush suggestions
 ```
+
 **Pull trendy tags**
 
 ```bash
 truthbrush tags
 ```
+
 **Pull ads**
 
 ```bash
@@ -138,7 +154,6 @@ poetry install
 poetry shell
 truthbrush --help # will use your local copy of truthbrush
 ```
-
 
 If you prefer not to install Poetry in your root environment, you can also use Conda:
 
