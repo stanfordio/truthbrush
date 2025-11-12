@@ -23,7 +23,7 @@ logging.basicConfig(
 BASE_URL = "https://truthsocial.com"
 API_BASE_URL = "https://truthsocial.com/api"
 USER_AGENT = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0"
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
 )
 
 # Oauth client credentials, from https://truthsocial.com/packs/js/application-d77ef3e9148ad1d0624c.js
