@@ -42,6 +42,16 @@ class LoginErrorException(Exception):
     pass
 
 
+class GeoblockException(LoginErrorException):
+    """Raised when Truth Social blocks access due to geographic restrictions"""
+    pass
+
+
+class CFBlockException(LoginErrorException):
+    """Raised when Cloudflare blocks the request"""
+    pass
+
+
 class Api:
     def __init__(
         self,
@@ -498,6 +508,25 @@ class Api:
                     "User-Agent": USER_AGENT,
                 },
             )
+
+            # Check for 403 errors and identify the specific type
+            if sess_req.status_code == 403:
+                response_text = sess_req.text.lower()
+
+                # Check for geographic restriction
+                if "unavailable in your area" in response_text:
+                    logger.error("Geographic restriction detected")
+                    raise GeoblockException("Truth Social is unavailable in your area.")
+
+                # Check for Cloudflare block
+                if "you have been blocked" in response_text:
+                    logger.error("Cloudflare block detected")
+                    raise CFBlockException("Request blocked by Cloudflare.")
+
+                # Generic 403 error
+                logger.error(f"403 Forbidden: {response_text[:200]}")
+                raise LoginErrorException(f"Authentication forbidden (403). Response: {response_text[:200]}")
+
             sess_req.raise_for_status()
         except requests.RequestsError as e:
             logger.error(f"Failed login request: {str(e)}")
