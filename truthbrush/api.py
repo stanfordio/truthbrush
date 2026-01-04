@@ -474,7 +474,7 @@ class Api:
                     tzinfo=timezone.utc
                 )
                 if (created_after and post_at <= created_after) or (
-                    since_id and post["id"] <= since_id
+                    since_id and int(post["id"]) <= int(since_id)
                 ):
                     keep_going = False  # stop the loop, request no more pages
                     break  # do not yeild this post or remaining (older) posts on this page
