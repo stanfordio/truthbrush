@@ -1,5 +1,5 @@
 # truthbrush
-Truthbrush is an API client for Truth Social. Truthbrush is built and maintained by the [Stanford Internet Observatory](https://io.stanford.edu).
+Truthbrush is an API client for Truth Social.
 
 Currently, this tool can:
 
@@ -21,8 +21,6 @@ Truthbrush is designed for academic research, open source intelligence gathering
 
 ## Installation
 
-**Note that Truthbrush requires Python 3.10 or higher.**
-
 From PyPi:
 
 ```sh
@@ -42,6 +40,8 @@ After installation, you will need to set your Truth Social username and password
 `export TRUTHSOCIAL_USERNAME=foo`
 
 `export TRUTHSOCIAL_PASSWORD=bar`
+
+If you encounter login issues, you can instead extract your login token from the truth:auth Local Storage store and export it in `TRUTHSOCIAL_TOKEN`.
 
 You may also set these variables in a `.env` file in the directory from which you are running Truthbrush.
 
@@ -155,16 +155,6 @@ poetry shell
 truthbrush --help # will use your local copy of truthbrush
 ```
 
-If you prefer not to install Poetry in your root environment, you can also use Conda:
-
-```sh
-conda create -n truthbrush-env python=3.9
-conda activate truthbrush-env
-
-conda install -c conda-forge poetry
-poetry install
-```
-
 To run the tests:
 
 ```sh
@@ -179,9 +169,3 @@ Please format your code with `black`:
 ```sh
 black .
 ```
-
-## Wishlist
-
-Support for the following capabilities is planned:
-
-- ...nothing right now! (Got an idea? Submit an issue/PR!)
