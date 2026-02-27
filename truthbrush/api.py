@@ -52,20 +52,23 @@ class CFBlockException(LoginErrorException):
     pass
 
 
-def date_to_bound(date, bound: Literal["start", "end"]) -> int:
-    if isinstance(date, str):
-        date = datetime.fromisoformat(date)
-        if date.hour or date.minute or date.second or date.microsecond:
+def date_to_bound(dt_input: "str | datetime", bound: Literal["start", "end"]) -> int:
+    if isinstance(dt_input, str):
+        dt_input = datetime.fromisoformat(dt_input)
+        if dt_input.hour or dt_input.minute or dt_input.second or dt_input.microsecond:
             raise ValueError(
                 "date string must not include a time component. Pass in datetime object for time-specific bounds."
             )
 
+    if dt_input.tzinfo is None:
+        dt_input = dt_input.replace(tzinfo=timezone.utc)
+
     if bound == "start":
-        dt = date.replace(hour=0, minute=0, second=0, microsecond=0)
+        dt = dt_input.replace(hour=0, minute=0, second=0, microsecond=0)
         ms = int(dt.timestamp() * 1000)
         return (ms << 16) | 0x0000
     else:
-        dt = date.replace(hour=23, minute=59, second=59, microsecond=999999)
+        dt = dt_input.replace(hour=23, minute=59, second=59, microsecond=999999)
         ms = int(dt.timestamp() * 1000)
         return (ms << 16) | 0xFFFF
 
@@ -252,12 +255,10 @@ class Api:
         assert query is not None and searchtype is not None
 
         # error handling for date and id bounds
-        assert (min_id == "0") or (
-            start_date is None
-        ), "Cannot specify both min_id and start_date"
-        assert (max_id is None) or (
-            end_date is None
-        ), "Cannot specify both max_id and end_date"
+        if min_id != "0" and start_date is not None:
+            raise ValueError("Cannot specify both min_id and start_date")
+        if max_id is not None and end_date is not None:
+            raise ValueError("Cannot specify both max_id and end_date")
 
         if start_date is not None:
             min_id = str(date_to_bound(start_date, "start"))
