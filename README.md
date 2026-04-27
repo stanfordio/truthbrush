@@ -1,3 +1,5 @@
+### Please see maintained fork at: https://github.com/w2rc/truthbrush
+
 # truthbrush
 Truthbrush is an API client for Truth Social.
 
